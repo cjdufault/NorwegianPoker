@@ -5,12 +5,12 @@ class Player:
     def __init__(self, suit):
         self.suit = suit  # the suit that the player is playing with
         path = "assets/" + suit
-        self.hand = [Card("A", path), Card("2", path), Card("3", path), Card("4", path), Card("5", path),
-                     Card("6", path), Card("8", path), Card("9", path), Card("10", path), Card("J", path),
-                     Card("Q", path)]
+        self.hand = {1: Card("A", path), 2: Card("2", path), 3: Card("3", path), 4 : Card("4", path), 5: Card("5", path),
+                     6: Card("6", path), 8: Card("8", path), 9: Card("9", path), 10: Card("10", path), 11: Card("J", path),
+                     12: Card("Q", path)}
 
     def flip_card(self, dice_roll):
-        self.hand[dice_roll - 1].flip()
+        self.hand[dice_roll].flip()
 
 
 class Card:
