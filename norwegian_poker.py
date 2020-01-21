@@ -84,6 +84,7 @@ def main():
             else:
                 screen.blit(roll_button, roll_button_origin)
                 pygame.display.update()
+                pygame.event.clear(pygame.MOUSEBUTTONDOWN)
                 event = pygame.event.wait()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
