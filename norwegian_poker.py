@@ -23,6 +23,11 @@ def main():
     background = pygame.image.load(os.path.join("assets", "poker_table.jpg")).convert()
     title_image = pygame.image.load(os.path.join("assets", "np_title.png")).convert()
     card_back = pygame.image.load(os.path.join("assets", "card_back.png")).convert()
+    roll_button = pygame.image.load(os.path.join("assets", "roll_button.png"))
+
+    roll_button_origin = (screen_width - 300, screen_height - 150)
+    roll_button_rect = pygame.Rect(roll_button_origin[0], roll_button_origin[1],
+                                   roll_button_origin[0] + 100, roll_button_origin[1] + 100)
 
     dice_images = [pygame.image.load(os.path.join("assets", "dice", "dice1.png")).convert(),
                    pygame.image.load(os.path.join("assets", "dice", "dice2.png")).convert(),
@@ -52,26 +57,68 @@ def main():
             break
 
     if running:  # checks to make sure player hasn't tried to quit while title screen is displayed
-        player1 = np_classes.Player("clubs", ((screen_width / 2) - 170, screen_height - 202), False, True)
-        player2 = np_classes.Player("diamonds", (20, (screen_height / 2) - 235), True, False)
-        player3 = np_classes.Player("hearts", ((screen_width / 2) - 170, 20), False, False)
-        player4 = np_classes.Player("spades", (screen_width - 150, (screen_height / 2) - 235), True, False)
+        players = [np_classes.Player("clubs", ((screen_width / 2) - 170, screen_height - 202), False, True),
+                   np_classes.Player("diamonds", (20, (screen_height / 2) - 235), True, False),
+                   np_classes.Player("hearts", ((screen_width / 2) - 170, 20), False, False),
+                   np_classes.Player("spades", (screen_width - 150, (screen_height / 2) - 235), True, False)]
 
         # draw cards and dice
-        deal(screen, [player1, player2, player3, player4])
+        deal(screen, players)
         draw_die(screen, dice_images[random.randint(0, 5)], dice_origins[0])
         pygame.time.wait(100)
         draw_die(screen, dice_images[random.randint(0, 5)], dice_origins[1])
 
-    # counter to indicate whose turn it is.
-    turn = 1
+        # counter to indicate whose turn it is.
+        turn = 0
 
-    # start the main game
-    while running:
-        event = pygame.event.wait()
-        if event.type == pygame.QUIT:
-            running = False
-        # TODO: add listeners for different actions
+        # start the main game
+        while running:
+            player = players[turn]
+            dice_rolled = False  # will be assigned true if a dice roll has occurred
+
+            if not player.is_human:
+                dice_roll = roll(screen, dice_images, dice_origins)
+                result = dice_roll[0] + dice_roll[1]
+                dice_rolled = True
+                pygame.time.wait(1000)
+            else:
+                screen.blit(roll_button, roll_button_origin)
+                pygame.display.update()
+                event = pygame.event.wait()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if roll_button_rect.collidepoint(mouse_pos):
+                        dice_roll = roll(screen, dice_images, dice_origins)
+                        result = dice_roll[0] + dice_roll[1]
+                        dice_rolled = True
+                elif event.type == pygame.QUIT:
+                    running = False
+
+            if dice_rolled and result != 7:
+                if is_card_face_up(player, result):
+                    flip_card(screen, player, result, card_back)
+                    if not dice_roll[0] == dice_roll[1]:
+                        turn = increment_turn(turn, len(players))
+                else:
+                    other_player_has_card_face_up = False
+                    for i in range(len(players)):
+                        next_player = increment_turn(turn, len(players))
+
+                        if not other_player_has_card_face_up:
+                            next_player_has_card = is_card_face_up(players[next_player], result)
+                            if next_player_has_card:
+                                flip_card(screen, players[next_player], result, card_back)
+                                turn = next_player
+                                other_player_has_card_face_up = True
+
+                    if not other_player_has_card_face_up:
+                        flip_card(screen, player, result, card_back)
+                        turn = increment_turn(turn, len(players))
+                pygame.time.wait(1000)
+            elif dice_rolled and result == 7:
+                turn = increment_turn(turn, len(players))
+                pygame.time.wait(1000)
 
 
 def deal(screen, players):
@@ -122,6 +169,13 @@ def flip_card(screen, player, dice_roll, card_back):
     is_vert = player.get_is_vert()
     player_origin = player.get_origin()
 
+    if is_card_face_up(player, dice_roll):
+        image = card_back
+    else:
+        image = player.get_card(dice_roll).get_image()
+
+    player.flip_card(dice_roll)
+
     if is_vert:
         if dice_roll < 7:
             card_orig_x = player_origin[0]
@@ -139,17 +193,21 @@ def flip_card(screen, player, dice_roll, card_back):
             card_orig_y = player_origin[1] + 96
         hand_rect = pygame.Rect(player_origin[0], player_origin[1], player_origin[0] + 340, player_origin[1] + 182)
 
-    screen.blit(card_back, (card_orig_x, card_orig_y))
+    screen.blit(image, (card_orig_x, card_orig_y))
     pygame.display.update(hand_rect)
 
 
 # increments the turn counter, and loops around to 1 if it's the last player's turn
 def increment_turn(current_turn, num_players):
-    if current_turn != num_players:
+    if current_turn < num_players - 1:
         next_turn = current_turn + 1
     else:
-        next_turn = 1
+        next_turn = 0
     return next_turn
+
+
+def is_card_face_up(player, dice_roll):
+    return player.get_card(dice_roll).is_face_up()
 
 
 if __name__ == '__main__':

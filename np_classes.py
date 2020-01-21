@@ -10,14 +10,16 @@ class Player:
         self.is_human = is_human
 
         path = os.path.join("assets", suit)
+
+        # keys indicate dice rolls that correspond to that card
         self.hand = {2: Card("2", path), 3: Card("3", path), 4: Card("4", path), 5: Card("5", path), 6: Card("6", path),
                      8: Card("8", path), 9: Card("9", path), 10: Card("10", path), 11: Card("J", path), 12: Card("Q", path)}
 
     def flip_card(self, dice_roll):
         self.hand[dice_roll].flip()
 
-    def get_card(self, card_int):
-        return self.hand[card_int]
+    def get_card(self, dice_roll):
+        return self.hand[dice_roll]
 
     def get_hand(self):
         return self.hand
@@ -44,9 +46,8 @@ class Card:
         else:
             self.face_up = True
 
-    def get_face_up(self):
-        if self.face_up:
-            return True
+    def is_face_up(self):
+        return self.face_up
 
     def get_image(self):
         return self.image
