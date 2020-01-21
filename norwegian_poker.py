@@ -15,6 +15,8 @@ def main():
     pygame.display.set_caption("Norwegian Poker")
 
     # load assets
+    icon = pygame.image.load(os.path.join("assets", "icon.png"))
+    pygame.display.set_icon(icon)   # set icon
     background = pygame.image.load(os.path.join("assets", "poker_table.jpg")).convert()
     title_image = pygame.image.load(os.path.join("assets", "np_title.png")).convert()
 
@@ -32,21 +34,18 @@ def main():
     screen.blit(title_image, (192, 75))
     pygame.display.update()
 
-    intro_done = False
-
     # after mouse click or key press, remove the title image and redraw background
-    while not intro_done:
+    while True:
         # pygame.event.wait() waits until an event is registered, otherwise the program uses literally every cpu cycle
         event = pygame.event.wait()
 
         if event.type == pygame.QUIT:
-            intro_done = True
             running = False
+            break
         elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
             screen.blit(background, (0, 0))
-            title_rect = pygame.Rect(192, 75, 832, 501)
-            pygame.display.update(title_rect)
-            intro_done = True
+            pygame.display.update(pygame.Rect(192, 75, 832, 501))
+            break
 
     if running:  # checks to make sure player hasn't tried to quit while title screen is displayed
         player1 = np_classes.Player("clubs", ((screen_width / 2) - 170, screen_height - 202), False, True)
@@ -56,15 +55,13 @@ def main():
 
         # draw cards and dice
         deal(screen, [player1, player2, player3, player4])
-        draw_die(screen, dice_images[0], dice_origins[0])
+        draw_die(screen, dice_images[random.randint(0, 5)], dice_origins[0])
         pygame.time.wait(100)
-        draw_die(screen, dice_images[0], dice_origins[1])
+        draw_die(screen, dice_images[random.randint(0, 5)], dice_origins[1])
 
-        print(roll(screen, dice_images, dice_origins))
-
+    # start the main game
     while running:
         event = pygame.event.wait()
-
         if event.type == pygame.QUIT:
             running = False
         # TODO: add listeners for different actions
@@ -100,12 +97,14 @@ def roll(screen, dice_images, dice_origins):
     die_1_result = random.randint(1, 6)
     die_2_result = random.randint(1, 6)
 
+    # display a bunch of dice faces. does nothing, just for show
     for i in range(random.randint(10, 20)):
         draw_die(screen, dice_images[random.randint(0, 5)], dice_origins[0])
         pygame.time.wait(50)
         draw_die(screen, dice_images[random.randint(0, 5)], dice_origins[1])
         pygame.time.wait(50)
 
+    # draw and return the actual results
     draw_die(screen, dice_images[die_1_result - 1], dice_origins[0])
     pygame.time.wait(50)
     draw_die(screen, dice_images[die_2_result - 1], dice_origins[1])
