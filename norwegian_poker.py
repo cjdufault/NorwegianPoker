@@ -1,6 +1,7 @@
 import os
 import pygame
 import np_classes
+import random
 
 
 def main():
@@ -55,7 +56,11 @@ def main():
 
         # draw cards and dice
         deal(screen, [player1, player2, player3, player4])
-        draw_dice(screen, dice_images, dice_origins, 1, 1)
+        draw_die(screen, dice_images[0], dice_origins[0])
+        pygame.time.wait(100)
+        draw_die(screen, dice_images[0], dice_origins[1])
+
+        print(roll(screen, dice_images, dice_origins))
 
     while running:
         event = pygame.event.wait()
@@ -86,17 +91,25 @@ def deal(screen, players):
                 pygame.time.wait(100)
 
 
-def draw_dice(screen, dice_images, dice_origins, value_1, value_2):
-    screen.blit(dice_images[value_1 - 1], dice_origins[0])
-    pygame.display.update(pygame.Rect(dice_origins[0][0], dice_origins[0][1],
-                                      dice_origins[0][0] + 60, dice_origins[0][1] + 60))
-    pygame.time.wait(100)
-    screen.blit(dice_images[value_2 - 1], dice_origins[1])
-    pygame.display.update(pygame.Rect(dice_origins[1][0], dice_origins[1][1],
-                                      dice_origins[1][0] + 60, dice_origins[1][1] + 60))
+def draw_die(screen, image, origin):
+    screen.blit(image, origin)
+    pygame.display.update(pygame.Rect(origin[0], origin[1], origin[0] + 60, origin[1] + 60))
 
 
-# def roll(screen, dice_images):
+def roll(screen, dice_images, dice_origins):
+    die_1_result = random.randint(1, 6)
+    die_2_result = random.randint(1, 6)
+
+    for i in range(random.randint(10, 20)):
+        draw_die(screen, dice_images[random.randint(0, 5)], dice_origins[0])
+        pygame.time.wait(50)
+        draw_die(screen, dice_images[random.randint(0, 5)], dice_origins[1])
+        pygame.time.wait(50)
+
+    draw_die(screen, dice_images[die_1_result - 1], dice_origins[0])
+    pygame.time.wait(50)
+    draw_die(screen, dice_images[die_2_result - 1], dice_origins[1])
+    return die_1_result, die_2_result
 
 
 if __name__ == '__main__':
