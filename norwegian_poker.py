@@ -129,6 +129,7 @@ def flip_card(screen, player, dice_roll, card_back):
         else:
             card_orig_x = player_origin[0] + 70
             card_orig_y = player_origin[1] + (96 * (dice_roll - 8))
+        hand_rect = pygame.Rect(player_origin[0], player_origin[1], player_origin[0] + 130, player_origin[1] + 470)
     else:
         if dice_roll < 7:
             card_orig_x = player_origin[0] + (70 * (dice_roll - 2))
@@ -136,9 +137,10 @@ def flip_card(screen, player, dice_roll, card_back):
         else:
             card_orig_x = player_origin[0] + (70 * (dice_roll - 8))
             card_orig_y = player_origin[1] + 96
+        hand_rect = pygame.Rect(player_origin[0], player_origin[1], player_origin[0] + 340, player_origin[1] + 182)
 
     screen.blit(card_back, (card_orig_x, card_orig_y))
-    pygame.display.update()
+    pygame.display.update(hand_rect)
 
 
 # increments the turn counter, and loops around to 1 if it's the last player's turn
