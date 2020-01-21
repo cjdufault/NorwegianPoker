@@ -17,15 +17,19 @@ def main():
     # load assets
     icon = pygame.image.load(os.path.join("assets", "icon.png"))
     pygame.display.set_icon(icon)   # set icon
+
+    # .convert() converts an image's pixel format to SDL's format ahead of time,
+    # so it doesn't have to do it every time the image is drawn
     background = pygame.image.load(os.path.join("assets", "poker_table.jpg")).convert()
     title_image = pygame.image.load(os.path.join("assets", "np_title.png")).convert()
+    card_back = pygame.image.load(os.path.join("assets", "card_back.png")).convert()
 
-    dice_images = [pygame.image.load(os.path.join("assets", "dice", "dice1.png")),
-                   pygame.image.load(os.path.join("assets", "dice", "dice2.png")),
-                   pygame.image.load(os.path.join("assets", "dice", "dice3.png")),
-                   pygame.image.load(os.path.join("assets", "dice", "dice4.png")),
-                   pygame.image.load(os.path.join("assets", "dice", "dice5.png")),
-                   pygame.image.load(os.path.join("assets", "dice", "dice6.png"))]
+    dice_images = [pygame.image.load(os.path.join("assets", "dice", "dice1.png")).convert(),
+                   pygame.image.load(os.path.join("assets", "dice", "dice2.png")).convert(),
+                   pygame.image.load(os.path.join("assets", "dice", "dice3.png")).convert(),
+                   pygame.image.load(os.path.join("assets", "dice", "dice4.png")).convert(),
+                   pygame.image.load(os.path.join("assets", "dice", "dice5.png")).convert(),
+                   pygame.image.load(os.path.join("assets", "dice", "dice6.png")).convert()]
     dice_origins = (((screen_width / 2) - 65, (screen_height / 2) - 30),
                     ((screen_width / 2) + 65, (screen_height / 2) - 30))
 
@@ -58,6 +62,9 @@ def main():
         draw_die(screen, dice_images[random.randint(0, 5)], dice_origins[0])
         pygame.time.wait(100)
         draw_die(screen, dice_images[random.randint(0, 5)], dice_origins[1])
+
+    # counter to indicate whose turn it is.
+    turn = 1
 
     # start the main game
     while running:
@@ -109,6 +116,38 @@ def roll(screen, dice_images, dice_origins):
     pygame.time.wait(50)
     draw_die(screen, dice_images[die_2_result - 1], dice_origins[1])
     return die_1_result, die_2_result
+
+
+def flip_card(screen, player, dice_roll, card_back):
+    is_vert = player.get_is_vert()
+    player_origin = player.get_origin()
+
+    if is_vert:
+        if dice_roll < 7:
+            card_orig_x = player_origin[0]
+            card_orig_y = player_origin[1] + (96 * (dice_roll - 2))
+        else:
+            card_orig_x = player_origin[0] + 70
+            card_orig_y = player_origin[1] + (96 * (dice_roll - 8))
+    else:
+        if dice_roll < 7:
+            card_orig_x = player_origin[0] + (70 * (dice_roll - 2))
+            card_orig_y = player_origin[1]
+        else:
+            card_orig_x = player_origin[0] + (70 * (dice_roll - 8))
+            card_orig_y = player_origin[1] + 96
+
+    screen.blit(card_back, (card_orig_x, card_orig_y))
+    pygame.display.update()
+
+
+# increments the turn counter, and loops around to 1 if it's the last player's turn
+def increment_turn(current_turn, num_players):
+    if current_turn != num_players:
+        next_turn = current_turn + 1
+    else:
+        next_turn = 1
+    return next_turn
 
 
 if __name__ == '__main__':
