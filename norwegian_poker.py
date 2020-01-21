@@ -80,7 +80,7 @@ def main():
                 dice_roll = roll(screen, dice_images, dice_origins)
                 result = dice_roll[0] + dice_roll[1]
                 dice_rolled = True
-                pygame.time.wait(1000)
+                pygame.time.wait(500)
             else:
                 screen.blit(roll_button, roll_button_origin)
                 pygame.display.update()
