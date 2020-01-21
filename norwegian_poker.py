@@ -1,12 +1,11 @@
 import os
-
 import pygame
 import np_classes
-import time
 
 
 def main():
     pygame.init()
+    running = True
 
     # create screen, set video mode
     screen_width = 1024
@@ -17,15 +16,15 @@ def main():
     # load assets
     background = pygame.image.load(os.path.join("assets", "poker_table.jpg")).convert()
     title_image = pygame.image.load(os.path.join("assets", "np_title.png")).convert()
-    dice1_image = pygame.image.load(os.path.join("assets", "dice", "dice1.png"))
-    dice2_image = pygame.image.load(os.path.join("assets", "dice", "dice2.png"))
-    dice3_image = pygame.image.load(os.path.join("assets", "dice", "dice3.png"))
-    dice4_image = pygame.image.load(os.path.join("assets", "dice", "dice4.png"))
-    dice5_image = pygame.image.load(os.path.join("assets", "dice", "dice5.png"))
-    dice6_image = pygame.image.load(os.path.join("assets", "dice", "dice6.png"))
 
-    dice_images = [dice1_image, dice2_image, dice3_image, dice4_image, dice5_image, dice6_image]
-    dice_origns = (((screen_width / 2) - 65, (screen_height / 2) - 30), ((screen_width / 2) + 65, (screen_height / 2) - 30))
+    dice_images = [pygame.image.load(os.path.join("assets", "dice", "dice1.png")),
+                   pygame.image.load(os.path.join("assets", "dice", "dice2.png")),
+                   pygame.image.load(os.path.join("assets", "dice", "dice3.png")),
+                   pygame.image.load(os.path.join("assets", "dice", "dice4.png")),
+                   pygame.image.load(os.path.join("assets", "dice", "dice5.png")),
+                   pygame.image.load(os.path.join("assets", "dice", "dice6.png"))]
+    dice_origins = (((screen_width / 2) - 65, (screen_height / 2) - 30),
+                    ((screen_width / 2) + 65, (screen_height / 2) - 30))
 
     # draw background and title
     screen.blit(background, (0, 0))
@@ -37,20 +36,26 @@ def main():
     # after mouse click or key press, remove the title image and redraw background
     while not intro_done:
         # pygame.event.wait() waits until an event is registered, otherwise the program uses literally every cpu cycle
-        mouse_or_key_pressed = pygame.event.wait()
-        if mouse_or_key_pressed.type == pygame.KEYDOWN or mouse_or_key_pressed.type == pygame.MOUSEBUTTONDOWN:
+        event = pygame.event.wait()
+
+        if event.type == pygame.QUIT:
+            intro_done = True
+            running = False
+        elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
             screen.blit(background, (0, 0))
             title_rect = pygame.Rect(192, 75, 832, 501)
             pygame.display.update(title_rect)
             intro_done = True
 
-    player1 = np_classes.Player("clubs", ((screen_width / 2) - 205, screen_height - 202), False, True)
-    player2 = np_classes.Player("diamonds", (20, (screen_height / 2) - 283), True, False)
-    player3 = np_classes.Player("hearts", ((screen_width / 2) - 205, 20), False, False)
-    player4 = np_classes.Player("spades", (screen_width - 150, (screen_height / 2) - 283), True, False)
+    if running:  # checks to make sure player hasn't tried to quit while title screen is displayed
+        player1 = np_classes.Player("clubs", ((screen_width / 2) - 170, screen_height - 202), False, True)
+        player2 = np_classes.Player("diamonds", (20, (screen_height / 2) - 235), True, False)
+        player3 = np_classes.Player("hearts", ((screen_width / 2) - 170, 20), False, False)
+        player4 = np_classes.Player("spades", (screen_width - 150, (screen_height / 2) - 235), True, False)
 
-    deal(screen, [player1, player2, player3, player4])
-    running = True
+        # draw cards and dice
+        deal(screen, [player1, player2, player3, player4])
+        draw_dice(screen, dice_images, dice_origins, 1, 1)
 
     while running:
         event = pygame.event.wait()
@@ -81,8 +86,17 @@ def deal(screen, players):
                 pygame.time.wait(100)
 
 
-# def roll(screen, dice_images):
+def draw_dice(screen, dice_images, dice_origins, value_1, value_2):
+    screen.blit(dice_images[value_1 - 1], dice_origins[0])
+    pygame.display.update(pygame.Rect(dice_origins[0][0], dice_origins[0][1],
+                                      dice_origins[0][0] + 60, dice_origins[0][1] + 60))
+    pygame.time.wait(100)
+    screen.blit(dice_images[value_2 - 1], dice_origins[1])
+    pygame.display.update(pygame.Rect(dice_origins[1][0], dice_origins[1][1],
+                                      dice_origins[1][0] + 60, dice_origins[1][1] + 60))
 
+
+# def roll(screen, dice_images):
 
 
 if __name__ == '__main__':
