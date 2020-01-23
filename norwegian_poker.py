@@ -24,6 +24,7 @@ def main():
     title_image = pygame.image.load(os.path.join("assets", "np_title.png")).convert()
     card_back = pygame.image.load(os.path.join("assets", "card_back.png")).convert()
     roll_button = pygame.image.load(os.path.join("assets", "roll_button.png"))
+    disabled_button = pygame.image.load(os.path.join("assets", "disabled_button.png"))
 
     roll_button_origin = (screen_width - 300, screen_height - 150)
     roll_button_rect = pygame.Rect(roll_button_origin[0], roll_button_origin[1],
@@ -36,7 +37,7 @@ def main():
                    pygame.image.load(os.path.join("assets", "dice", "dice5.png")).convert(),
                    pygame.image.load(os.path.join("assets", "dice", "dice6.png")).convert()]
     dice_origins = (((screen_width / 2) - 65, (screen_height / 2) - 30),
-                    ((screen_width / 2) + 65, (screen_height / 2) - 30))
+                    ((screen_width / 2) + 5, (screen_height / 2) - 30))
 
     # draw background and title
     screen.blit(background, (0, 0))
@@ -76,49 +77,92 @@ def main():
             player = players[turn]
             dice_rolled = False  # will be assigned true if a dice roll has occurred
 
+            # for computer players
             if not player.is_human:
+                # do dice roll
                 dice_roll = roll(screen, dice_images, dice_origins)
                 result = dice_roll[0] + dice_roll[1]
                 dice_rolled = True
-                pygame.time.wait(500)
+
+                running = listen_for_quit()
+                if not running:
+                    break
+                pygame.time.wait(1000)
+
+            # for human players
             else:
+                # draw enabled version of roll button
                 screen.blit(roll_button, roll_button_origin)
-                pygame.display.update()
+                pygame.display.update(roll_button_rect)
+
+                # clear all mouse clicks, so clicks from other turns aren't registered
                 pygame.event.clear(pygame.MOUSEBUTTONDOWN)
                 event = pygame.event.wait()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     if roll_button_rect.collidepoint(mouse_pos):
+                        # draw disabled version of button after click
+                        screen.blit(disabled_button, roll_button_origin)
+                        pygame.display.update(roll_button_rect)
+
+                        # do dice roll
                         dice_roll = roll(screen, dice_images, dice_origins)
                         result = dice_roll[0] + dice_roll[1]
                         dice_rolled = True
+
+                        running = listen_for_quit()
+                        if not running:
+                            break
+                        pygame.time.wait(1000)
                 elif event.type == pygame.QUIT:
                     running = False
 
+            # flip any cards that should be flipped
             if dice_rolled and result != 7:
-                if is_card_face_up(player, result):
+
+                # check if player has card face up, if yes, flip it
+                if player.get_card(result).is_face_up():
                     flip_card(screen, player, result, card_back)
+
+                    # if player has card face up and rolls doubles, it's their turn again, so we leave the turn variable
+                    # untouched. otherwise, we go to the next player's turn.
                     if not dice_roll[0] == dice_roll[1]:
                         turn = increment_turn(turn, len(players))
+
+                # if player has card face down
                 else:
-                    other_player_has_card_face_up = False
+                    other_player_has_card_face_up = False  # will be true if another player has card face up
+
                     for i in range(len(players)):
                         next_player = increment_turn(turn, len(players))
 
                         if not other_player_has_card_face_up:
-                            next_player_has_card = is_card_face_up(players[next_player], result)
+                            next_player_has_card = players[next_player].get_card(result).is_face_up()
+
+                            # if another player has the card face up, flip their card, and now it's their turn
                             if next_player_has_card:
                                 flip_card(screen, players[next_player], result, card_back)
                                 turn = next_player
                                 other_player_has_card_face_up = True
+                                break
 
                     if not other_player_has_card_face_up:
                         flip_card(screen, player, result, card_back)
                         turn = increment_turn(turn, len(players))
+
+                running = listen_for_quit()
+                if not running:
+                    break
                 pygame.time.wait(1000)
+
+            # there are no sevens in this game, so we just go to the next turn
             elif dice_rolled and result == 7:
                 turn = increment_turn(turn, len(players))
+
+                running = listen_for_quit()
+                if not running:
+                    break
                 pygame.time.wait(1000)
 
 
@@ -170,7 +214,7 @@ def flip_card(screen, player, dice_roll, card_back):
     is_vert = player.get_is_vert()
     player_origin = player.get_origin()
 
-    if is_card_face_up(player, dice_roll):
+    if player.get_card(dice_roll).is_face_up():
         image = card_back
     else:
         image = player.get_card(dice_roll).get_image()
@@ -207,8 +251,12 @@ def increment_turn(current_turn, num_players):
     return next_turn
 
 
-def is_card_face_up(player, dice_roll):
-    return player.get_card(dice_roll).is_face_up()
+def listen_for_quit():
+    quit_events = pygame.event.get(pygame.QUIT)
+    if len(quit_events) > 0:
+        return False
+    else:
+        return True
 
 
 if __name__ == '__main__':
