@@ -135,15 +135,14 @@ def main():
                     other_player_has_card_face_up = False  # will be true if another player has card face up
 
                     for i in range(len(players)):
-                        next_player = increment_turn(turn, len(players))
+                        turn = increment_turn(turn, len(players))
 
                         if not other_player_has_card_face_up:
-                            next_player_has_card = players[next_player].get_card(result).is_face_up()
+                            next_player_has_card = players[turn].get_card(result).is_face_up()
 
                             # if another player has the card face up, flip their card, and now it's their turn
                             if next_player_has_card:
-                                flip_card(screen, players[next_player], result, card_back)
-                                turn = next_player
+                                flip_card(screen, players[turn], result, card_back)
                                 other_player_has_card_face_up = True
                                 break
 
@@ -164,6 +163,12 @@ def main():
                 if not running:
                     break
                 pygame.time.wait(1000)
+
+            # tests if the game has ended
+            for p in players:
+                if p.has_won():
+                    print(p.get_suit() + " has won")  # TODO: replace with an actual end of game screen or something
+                    running = False
 
 
 def deal(screen, players):
@@ -211,9 +216,10 @@ def roll(screen, dice_images, dice_origins):
 
 
 def flip_card(screen, player, dice_roll, card_back):
-    is_vert = player.get_is_vert()
-    player_origin = player.get_origin()
+    is_vert = player.get_is_vert()  # get player's orientation
+    player_origin = player.get_origin()  # get player's position on board
 
+    # reverse the face shown
     if player.get_card(dice_roll).is_face_up():
         image = card_back
     else:
@@ -221,6 +227,7 @@ def flip_card(screen, player, dice_roll, card_back):
 
     player.flip_card(dice_roll)
 
+    # calculate origins for a given card based on the player's origin and orientation
     if is_vert:
         if dice_roll < 7:
             card_orig_x = player_origin[0]
@@ -238,11 +245,12 @@ def flip_card(screen, player, dice_roll, card_back):
             card_orig_y = player_origin[1] + 96
         hand_rect = pygame.Rect(player_origin[0], player_origin[1], player_origin[0] + 340, player_origin[1] + 182)
 
+    # draw the new image
     screen.blit(image, (card_orig_x, card_orig_y))
     pygame.display.update(hand_rect)
 
 
-# increments the turn counter, and loops around to 1 if it's the last player's turn
+# increments the turn counter, and loops around to 0 if it's the last player's turn
 def increment_turn(current_turn, num_players):
     if current_turn < num_players - 1:
         next_turn = current_turn + 1
@@ -251,6 +259,7 @@ def increment_turn(current_turn, num_players):
     return next_turn
 
 
+# checks if any quit events are in the event queue
 def listen_for_quit():
     quit_events = pygame.event.get(pygame.QUIT)
     if len(quit_events) > 0:

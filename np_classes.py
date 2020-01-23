@@ -33,6 +33,22 @@ class Player:
     def get_is_human(self):
         return self.is_human
 
+    def get_suit(self):
+        return self.suit
+
+    # returns true if all player's cards are face down
+    def has_won(self):
+        has_won = True
+
+        for card in self.hand:
+
+            # set has_won to false and break if we find any card that's face up
+            if self.hand[card].is_face_up():
+                has_won = False
+                break
+
+        return has_won
+
 
 class Card:
     def __init__(self, card_name, image_path):
