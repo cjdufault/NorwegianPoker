@@ -57,6 +57,8 @@ def main():
             pygame.display.update(pygame.Rect(192, 75, 832, 501))
             break
 
+    # TODO: ask the player how many players they want to play with (2-4) and implement gameplay w/ varying #s of players
+
     if running:  # checks to make sure player hasn't tried to quit while title screen is displayed
         players = [np_classes.Player("clubs", ((screen_width / 2) - 170, screen_height - 202), False, True),
                    np_classes.Player("diamonds", (20, (screen_height / 2) - 235), True, False),
