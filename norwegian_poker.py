@@ -3,6 +3,10 @@ import pygame
 import np_classes
 import random
 
+# TODO: organize this mess. move a bunch of the variables that are getting passed around to global variables
+# TODO: break that massive main function apart. that thing is absurd.
+# TODO: make all origins and rects window-size agnostic
+
 
 def main():
     pygame.init()
