@@ -74,6 +74,9 @@ def main():
         # counter to indicate whose turn it is.
         turn = 0
 
+        # TODO: add an indicator that shows whose turn it currently is
+        # TODO: display the result of a dice roll as a number on the screen
+
         # start the main game
         while running:
             player = players[turn]
@@ -103,7 +106,9 @@ def main():
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
-                    if roll_button_rect.collidepoint(mouse_pos):
+
+                    if roll_button_rect.collidepoint(mouse_pos):  # if the mouse is over the button when clicked
+
                         # draw disabled version of button after click
                         screen.blit(disabled_button, roll_button_origin)
                         pygame.display.update(roll_button_rect)
@@ -117,6 +122,7 @@ def main():
                         if not running:
                             break
                         pygame.time.wait(1000)
+
                 elif event.type == pygame.QUIT:
                     running = False
 
