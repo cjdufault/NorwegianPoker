@@ -1,7 +1,6 @@
 import os
 import pygame
 import random
-import norwegian_poker
 
 
 class Display:
@@ -45,6 +44,23 @@ class Display:
                             pygame.image.load(os.path.join("assets", "dice", "dice6.png")).convert()]
         self.dice_origins = (((self.screen_width / 2) - 65, (self.screen_height / 2) - 30),
                              ((self.screen_width / 2) + 5, (self.screen_height / 2) - 30))
+
+        self.numbers_images = {2: pygame.image.load(os.path.join("assets", "numbers", "2.png")).convert(),
+                               3: pygame.image.load(os.path.join("assets", "numbers", "3.png")).convert(),
+                               4: pygame.image.load(os.path.join("assets", "numbers", "4.png")).convert(),
+                               5: pygame.image.load(os.path.join("assets", "numbers", "5.png")).convert(),
+                               6: pygame.image.load(os.path.join("assets", "numbers", "6.png")).convert(),
+                               7: pygame.image.load(os.path.join("assets", "numbers", "7.png")).convert(),
+                               8: pygame.image.load(os.path.join("assets", "numbers", "8.png")).convert(),
+                               9: pygame.image.load(os.path.join("assets", "numbers", "9.png")).convert(),
+                               10: pygame.image.load(os.path.join("assets", "numbers", "10.png")).convert(),
+                               11: pygame.image.load(os.path.join("assets", "numbers", "11.png")).convert(),
+                               12: pygame.image.load(os.path.join("assets", "numbers", "12.png")).convert()}
+
+        # where the sum of the two dice will be displayed
+        self.numbers_origin = (self.dice_origins[1][0] + 80, self.dice_origins[1][1] - 10)
+        self.numbers_rect = pygame.Rect(self.numbers_origin[0], self.numbers_origin[1],
+                                        self.numbers_origin[0] + 80, self.numbers_origin[1] + 80)
 
         self.players = [Player("clubs", ((self.screen_width / 2) - 170, self.screen_height - 202), False, True,
                                ((self.screen_width / 2) - 170, self.screen_height - 15)),
@@ -129,6 +145,11 @@ class Display:
         self.draw_die(self.dice_images[die_1_result - 1], self.dice_origins[0])
         pygame.time.wait(50)
         self.draw_die(self.dice_images[die_2_result - 1], self.dice_origins[1])
+
+        dice_sum = die_1_result + die_2_result
+
+        self.screen.blit(self.numbers_images[dice_sum], self.numbers_origin)
+        pygame.display.update(self.numbers_rect)
 
     def flip_card(self, player, dice_roll):
         is_vert = player.get_is_vert()  # get player's orientation
