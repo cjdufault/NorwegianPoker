@@ -57,6 +57,7 @@ class Display:
                                11: pygame.image.load(os.path.join("assets", "numbers", "11.png")).convert(),
                                12: pygame.image.load(os.path.join("assets", "numbers", "12.png")).convert()}
 
+        # TODO: figure out why numbers are appearing with a black background, instead of transparent
         # where the sum of the two dice will be displayed
         self.numbers_origin = (self.dice_origins[1][0] + 80, self.dice_origins[1][1] - 10)
         self.numbers_rect = pygame.Rect(self.numbers_origin[0], self.numbers_origin[1],
