@@ -3,19 +3,14 @@ import pygame
 import np_classes
 import random
 
-# TODO: organize this mess. move a bunch of the variables that are getting passed around to global variables
-# TODO: break that massive main function apart. that thing is absurd.
-# TODO: make all origins and rects window-size agnostic
-
-# counter to indicate whose turn it is.
-turn = 0
-
+turn = 0    # counter to indicate whose turn it is.
 running = True
+display = np_classes.Display(1024, 576)
 
 
 def main():
     global running
-    display = np_classes.Display(1024, 576)
+    global display
 
     running = display.intro()
 
@@ -23,18 +18,19 @@ def main():
 
     if running:  # checks to make sure player hasn't tried to quit while title screen is displayed
         display.deal()
+        display.set_status_bar(0, True)
 
-    # TODO: add an indicator that shows whose turn it currently is
     # TODO: display the result of a dice roll as a number on the screen
 
     # start the main game
     while running:
-        do_turn(display)
+        do_turn()
 
 
-def do_turn(display):
+def do_turn():
     global turn
     global running
+    global display
     player = display.get_players()[turn]
 
     dice_rolled = False  # will be assigned true if a dice roll has occurred
@@ -46,7 +42,7 @@ def do_turn(display):
     # for computer players
     if not human:
         # do dice roll
-        dice_roll = roll(display)
+        dice_roll = roll()
         result = dice_roll[0] + dice_roll[1]
         dice_rolled = True
 
@@ -68,7 +64,7 @@ def do_turn(display):
                 display.set_roll_button(False)
 
                 # do dice roll
-                dice_roll = roll(display)
+                dice_roll = roll()
                 result = dice_roll[0] + dice_roll[1]
                 dice_rolled = True
 
@@ -97,6 +93,9 @@ def do_turn(display):
             for i in range(len(display.players)):
                 turn = increment_turn(turn, len(display.players))
 
+                running = listen_for_quit()
+                pygame.time.wait(300)
+
                 if not other_player_has_card_face_up:
                     next_player_has_card = display.players[turn].get_card(result).is_face_up()
 
@@ -104,10 +103,16 @@ def do_turn(display):
                     if next_player_has_card:
                         display.flip_card(display.players[turn], result)
                         other_player_has_card_face_up = True
+
+                        running = listen_for_quit()
+                        pygame.time.wait(750)
                         break
 
             if not other_player_has_card_face_up:
                 display.flip_card(player, result)
+
+                running = listen_for_quit()
+                pygame.time.wait(1000)
                 turn = increment_turn(turn, len(display.players))
 
         running = listen_for_quit()
@@ -124,11 +129,13 @@ def do_turn(display):
     # tests if the game has ended
     for p in display.players:
         if p.has_won():
-            print(p.get_suit + " has won")  # TODO: replace with an actual end of game screen or something
+            print(str(p.get_suit) + " has won")  # TODO: replace with an actual end of game screen or something
             running = False
 
 
-def roll(display):
+def roll():
+    global display
+
     die_1_result = random.randint(1, 6)
     die_2_result = random.randint(1, 6)
 
@@ -142,6 +149,10 @@ def increment_turn(current_turn, num_players):
         next_turn = current_turn + 1
     else:
         next_turn = 0
+
+    # deactivate the current player's status bar, and activate the next players
+    display.set_status_bar(current_turn, False)
+    display.set_status_bar(next_turn, True)
     return next_turn
 
 

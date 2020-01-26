@@ -1,6 +1,7 @@
 import os
 import pygame
 import random
+import norwegian_poker
 
 
 class Display:
@@ -25,23 +26,34 @@ class Display:
         self.roll_button = pygame.image.load(os.path.join("assets", "roll_button.png"))
         self.disabled_button = pygame.image.load(os.path.join("assets", "disabled_button.png"))
 
+        self.status_bar_active_h = pygame.image.load(os.path.join("assets", "status_bars", "active_h.png")).convert()
+        self.status_bar_active_v = pygame.image.load(os.path.join("assets", "status_bars", "active_v.png")).convert()
+        self.status_bar_inactive_h = \
+            pygame.image.load(os.path.join("assets", "status_bars", "inactive_h.png")).convert()
+        self.status_bar_inactive_v = \
+            pygame.image.load(os.path.join("assets", "status_bars", "inactive_v.png")).convert()
+
         self.roll_button_origin = (self.screen_width - 300, self.screen_height - 150)
         self.roll_button_rect = pygame.Rect(self.roll_button_origin[0], self.roll_button_origin[1],
                                             self.roll_button_origin[0] + 100, self.roll_button_origin[1] + 100)
 
         self.dice_images = [pygame.image.load(os.path.join("assets", "dice", "dice1.png")).convert(),
-                       pygame.image.load(os.path.join("assets", "dice", "dice2.png")).convert(),
-                       pygame.image.load(os.path.join("assets", "dice", "dice3.png")).convert(),
-                       pygame.image.load(os.path.join("assets", "dice", "dice4.png")).convert(),
-                       pygame.image.load(os.path.join("assets", "dice", "dice5.png")).convert(),
-                       pygame.image.load(os.path.join("assets", "dice", "dice6.png")).convert()]
+                            pygame.image.load(os.path.join("assets", "dice", "dice2.png")).convert(),
+                            pygame.image.load(os.path.join("assets", "dice", "dice3.png")).convert(),
+                            pygame.image.load(os.path.join("assets", "dice", "dice4.png")).convert(),
+                            pygame.image.load(os.path.join("assets", "dice", "dice5.png")).convert(),
+                            pygame.image.load(os.path.join("assets", "dice", "dice6.png")).convert()]
         self.dice_origins = (((self.screen_width / 2) - 65, (self.screen_height / 2) - 30),
-                        ((self.screen_width / 2) + 5, (self.screen_height / 2) - 30))
+                             ((self.screen_width / 2) + 5, (self.screen_height / 2) - 30))
 
-        self.players = [Player("clubs", ((self.screen_width / 2) - 170, self.screen_height - 202), False, True),
-                        Player("diamonds", (20, (self.screen_height / 2) - 235), True, False),
-                        Player("hearts", ((self.screen_width / 2) - 170, 20), False, False),
-                        Player("spades", (self.screen_width - 150, (self.screen_height / 2) - 235), True, False)]
+        self.players = [Player("clubs", ((self.screen_width / 2) - 170, self.screen_height - 202), False, True,
+                               ((self.screen_width / 2) - 170, self.screen_height - 15)),
+                        Player("diamonds", (20, (self.screen_height / 2) - 235), True, False,
+                               (0, (self.screen_height / 2) - 235)),
+                        Player("hearts", ((self.screen_width / 2) - 170, 20), False, False,
+                               ((self.screen_width / 2) - 170, 0)),
+                        Player("spades", (self.screen_width - 150, (self.screen_height / 2) - 235), True, False,
+                               (self.screen_width - 15, (self.screen_height / 2) - 235))]
 
     def intro(self):
         # draw background and title
@@ -68,6 +80,19 @@ class Display:
             origin = player.get_origin()
             orig_x = origin[0]
             orig_y = origin[1]
+            status_bar_origin = player.get_status_bar_origin()
+            status_bar_orig_x = status_bar_origin[0]
+            status_bar_orig_y = status_bar_origin[1]
+
+            # draw status bar
+            if player.get_is_vert():
+                status_bar_image = self.status_bar_inactive_v
+            else:
+                status_bar_image = self.status_bar_inactive_h
+
+            status_bar_rect = player.get_status_bar_rect()
+            self.screen.blit(status_bar_image, (status_bar_orig_x, status_bar_orig_y))
+            pygame.display.update(status_bar_rect)
 
             # draw all of the cards
             if player.get_is_vert():
@@ -147,6 +172,25 @@ class Display:
             self.screen.blit(self.disabled_button, self.roll_button_origin)
             pygame.display.update(self.roll_button_rect)
 
+    def set_status_bar(self, turn_num, is_active):
+        player = self.players[turn_num]
+        status_origin = player.get_status_bar_origin()
+        status_rect = player.get_status_bar_rect()
+
+        if is_active:
+            if player.get_is_vert():
+                image = self.status_bar_active_v
+            else:
+                image = self.status_bar_active_h
+        else:
+            if player.get_is_vert():
+                image = self.status_bar_inactive_v
+            else:
+                image = self.status_bar_inactive_h
+
+        self.screen.blit(image, status_origin)
+        pygame.display.update(status_rect)
+
     def get_players(self):
         return self.players
 
@@ -155,11 +199,19 @@ class Display:
 
 
 class Player:
-    def __init__(self, suit, origin, is_vert, is_human):
+    def __init__(self, suit, origin, is_vert, is_human, status_bar_origin):
         self.suit = suit  # the suit that the player is playing with
         self.origin = origin    # indicates the location where the player's hand is to be drawn
         self.is_vert = is_vert  # indicates the orientation that the player's hand is to be drawn in
         self.is_human = is_human
+        self.status_bar_origin = status_bar_origin
+
+        if is_vert:
+            self.status_bar_rect = pygame.Rect(status_bar_origin[0], status_bar_origin[1],
+                                               status_bar_origin[0] + 130, status_bar_origin[1] + 470)
+        else:
+            self.status_bar_rect = pygame.Rect(status_bar_origin[0], status_bar_origin[1],
+                                               status_bar_origin[0] + 340, status_bar_origin[1] + 182)
 
         path = os.path.join("assets", suit)
 
@@ -187,6 +239,12 @@ class Player:
 
     def get_suit(self):
         return self.suit
+
+    def get_status_bar_origin(self):
+        return self.status_bar_origin
+
+    def get_status_bar_rect(self):
+        return self.status_bar_rect
 
     # returns true if all player's cards are face down
     def has_won(self):
