@@ -10,7 +10,6 @@ class Display:
         # create screen, set video mode
         self.screen_width = width
         self.screen_height = height
-        self.screen_rect = pygame.Rect((0, 0, self.screen_width, self.screen_height))
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Norwegian Poker")
 
@@ -60,8 +59,6 @@ class Display:
 
         # where the sum of the two dice will be displayed
         self.numbers_origin = (self.dice_origins[1][0] + 80, self.dice_origins[1][1] - 10)
-        self.numbers_rect = pygame.Rect(self.numbers_origin[0], self.numbers_origin[1],
-                                        self.numbers_origin[0] + 80, self.numbers_origin[1] + 80)
 
         self.players = [Player("clubs", ((self.screen_width / 2) - 170, self.screen_height - 202), False, True,
                                ((self.screen_width / 2) - 170, self.screen_height - 15)),
@@ -75,7 +72,7 @@ class Display:
     def intro(self):
         # draw title and background
         self.screen.blit(self.background, (0, 0))
-        self.screen.blit(self.title_image, ((self.screen_width / 2) - 320, (self.screen_height / 2) - 213))
+        title_image_rect = self.screen.blit(self.title_image, ((self.screen_width / 2) - 320, (self.screen_height / 2) - 213))
         pygame.display.update()
 
         # after mouse click or key press, remove the title image and redraw background
@@ -87,8 +84,7 @@ class Display:
                 return False
             elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 self.screen.blit(self.background, (0, 0))
-                pygame.display.update(pygame.Rect((self.screen_width / 2) - 320, (self.screen_height / 2) - 213,
-                                                  (self.screen_width / 2) + 320, (self.screen_height / 2) + 213))
+                pygame.display.update(title_image_rect)
                 break
         return True
 
@@ -107,22 +103,23 @@ class Display:
             else:
                 status_bar_image = self.status_bar_inactive_h
 
-            status_bar_rect = player.get_status_bar_rect()
-            self.screen.blit(status_bar_image, (status_bar_orig_x, status_bar_orig_y))
+            status_bar_rect = self.screen.blit(status_bar_image, (status_bar_orig_x, status_bar_orig_y))
             pygame.display.update(status_bar_rect)
 
             # draw all of the cards
             if player.get_is_vert():
                 for i in range(5):
-                    self.screen.blit(player.get_card(i + 2).get_image(), (orig_x, orig_y + (i * 96)))
-                    self.screen.blit(player.get_card(i + 8).get_image(), (orig_x + 70, orig_y + (i * 96)))
-                    pygame.display.update(pygame.Rect(orig_x, orig_y, orig_x + 130, orig_y + 470))
+                    card_rect_1 = self.screen.blit(player.get_card(i + 2).get_image(), (orig_x, orig_y + (i * 96)))
+                    card_rect_2 = self.screen.blit(player.get_card(i + 8).get_image(), (orig_x + 70, orig_y + (i * 96)))
+                    pygame.display.update(card_rect_1)
+                    pygame.display.update(card_rect_2)
                     pygame.time.wait(100)
             else:
                 for i in range(5):
-                    self.screen.blit(player.get_card(i + 2).get_image(), (orig_x + (i * 70), orig_y))
-                    self.screen.blit(player.get_card(i + 8).get_image(), (orig_x + (i * 70), orig_y + 96))
-                    pygame.display.update(pygame.Rect(orig_x, orig_y, orig_x + 340, orig_y + 182))
+                    card_rect_1 = self.screen.blit(player.get_card(i + 2).get_image(), (orig_x + (i * 70), orig_y))
+                    card_rect_2 = self.screen.blit(player.get_card(i + 8).get_image(), (orig_x + (i * 70), orig_y + 96))
+                    pygame.display.update(card_rect_1)
+                    pygame.display.update(card_rect_2)
                     pygame.time.wait(100)
 
         # draw the dice
@@ -131,8 +128,8 @@ class Display:
         self.draw_die(self.dice_images[random.randint(0, 5)], self.dice_origins[1])
 
     def draw_die(self, image, origin):
-        self.screen.blit(image, origin)
-        pygame.display.update(pygame.Rect(origin[0], origin[1], origin[0] + 60, origin[1] + 60))
+        die_rect = self.screen.blit(image, origin)
+        pygame.display.update(die_rect)
 
     def roll(self, die_1_result, die_2_result):
         # display a bunch of dice faces. does nothing, just for show
@@ -149,8 +146,8 @@ class Display:
 
         dice_sum = die_1_result + die_2_result
 
-        self.screen.blit(self.numbers_images[dice_sum], self.numbers_origin)
-        pygame.display.update(self.numbers_rect)
+        numbers_rect = self.screen.blit(self.numbers_images[dice_sum], self.numbers_origin)
+        pygame.display.update(numbers_rect)
 
     def flip_card(self, player, dice_roll):
         is_vert = player.get_is_vert()  # get player's orientation
@@ -172,7 +169,6 @@ class Display:
             else:
                 card_orig_x = player_origin[0] + 70
                 card_orig_y = player_origin[1] + (96 * (dice_roll - 8))
-            hand_rect = pygame.Rect(player_origin[0], player_origin[1], player_origin[0] + 130, player_origin[1] + 470)
         else:
             if dice_roll < 7:
                 card_orig_x = player_origin[0] + (70 * (dice_roll - 2))
@@ -180,24 +176,21 @@ class Display:
             else:
                 card_orig_x = player_origin[0] + (70 * (dice_roll - 8))
                 card_orig_y = player_origin[1] + 96
-            hand_rect = pygame.Rect(player_origin[0], player_origin[1], player_origin[0] + 340, player_origin[1] + 182)
 
         # draw the new image
-        self.screen.blit(image, (card_orig_x, card_orig_y))
-        pygame.display.update(hand_rect)
+        card_rect = self.screen.blit(image, (card_orig_x, card_orig_y))
+        pygame.display.update(card_rect)
 
     def set_roll_button(self, set_enable):
         if set_enable:
-            self.screen.blit(self.roll_button, self.roll_button_origin)
-            pygame.display.update(self.roll_button_rect)
+            roll_button_rect = self.screen.blit(self.roll_button, self.roll_button_origin)
         else:
-            self.screen.blit(self.disabled_button, self.roll_button_origin)
-            pygame.display.update(self.roll_button_rect)
+            roll_button_rect = self.screen.blit(self.disabled_button, self.roll_button_origin)
+        pygame.display.update(roll_button_rect)
 
     def set_status_bar(self, turn_num, is_active):
         player = self.players[turn_num]
         status_origin = player.get_status_bar_origin()
-        status_rect = player.get_status_bar_rect()
 
         if is_active:
             if player.get_is_vert():
@@ -210,7 +203,7 @@ class Display:
             else:
                 image = self.status_bar_inactive_h
 
-        self.screen.blit(image, status_origin)
+        status_rect = self.screen.blit(image, status_origin)
         pygame.display.update(status_rect)
 
     def get_players(self):
@@ -227,13 +220,6 @@ class Player:
         self.is_vert = is_vert  # indicates the orientation that the player's hand is to be drawn in
         self.is_human = is_human
         self.status_bar_origin = status_bar_origin
-
-        if is_vert:
-            self.status_bar_rect = pygame.Rect(status_bar_origin[0], status_bar_origin[1],
-                                               status_bar_origin[0] + 130, status_bar_origin[1] + 470)
-        else:
-            self.status_bar_rect = pygame.Rect(status_bar_origin[0], status_bar_origin[1],
-                                               status_bar_origin[0] + 340, status_bar_origin[1] + 182)
 
         path = os.path.join("assets", suit)
 
@@ -264,9 +250,6 @@ class Player:
 
     def get_status_bar_origin(self):
         return self.status_bar_origin
-
-    def get_status_bar_rect(self):
-        return self.status_bar_rect
 
     # returns true if all player's cards are face down
     def has_won(self):
