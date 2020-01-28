@@ -137,7 +137,7 @@ def do_turn():
     # tests if the game has ended
     for p in display.players:
         if p.has_won():
-            print(p.get_suit + " has won")  # TODO: replace with an actual end of game screen or something
+            print(p.get_suit() + " has won")  # TODO: replace with an actual end of game screen or something
             running = False
 
 
