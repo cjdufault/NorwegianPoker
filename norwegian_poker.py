@@ -38,7 +38,7 @@ def do_turn():
 
     # for computer players
     if not human:
-        running = listen_for_quit()
+        listen_for_quit()
 
         if running:
             # do dice roll
@@ -46,7 +46,7 @@ def do_turn():
             result = dice_roll[0] + dice_roll[1]
             dice_rolled = True
 
-        running = listen_for_quit()
+        listen_for_quit()
         if running:
             pygame.time.wait(1000)
 
@@ -65,13 +65,13 @@ def do_turn():
                 display.set_roll_button(False)
 
                 # do dice roll
-                running = listen_for_quit()
+                listen_for_quit()
                 if running:
                     dice_roll = roll()
                     result = dice_roll[0] + dice_roll[1]
                     dice_rolled = True
 
-                running = listen_for_quit()
+                listen_for_quit()
                 if running:
                     pygame.time.wait(1000)
 
@@ -97,7 +97,7 @@ def do_turn():
             for i in range(len(display.players)):
                 turn = increment_turn(turn, len(display.players))
 
-                running = listen_for_quit()
+                listen_for_quit()
                 if running:
                     pygame.time.wait(300)
 
@@ -109,7 +109,7 @@ def do_turn():
                         display.flip_card(display.players[turn], result)
                         other_player_has_card_face_up = True
 
-                        running = listen_for_quit()
+                        listen_for_quit()
                         if running:
                             pygame.time.wait(750)
                         break
@@ -117,12 +117,12 @@ def do_turn():
             if not other_player_has_card_face_up:
                 display.flip_card(player, result)
 
-                running = listen_for_quit()
+                listen_for_quit()
                 if running:
                     pygame.time.wait(1000)
                     turn = increment_turn(turn, len(display.players))
 
-        running = listen_for_quit()
+        listen_for_quit()
         if running:
             pygame.time.wait(1000)
 
@@ -130,7 +130,7 @@ def do_turn():
     elif dice_rolled and result == 7:
         turn = increment_turn(turn, len(display.players))
 
-        running = listen_for_quit()
+        listen_for_quit()
         if running:
             pygame.time.wait(1000)
 
@@ -166,11 +166,11 @@ def increment_turn(current_turn, num_players):
 
 # checks if any quit events are in the event queue
 def listen_for_quit():
+    global running
+
     quit_events = pygame.event.get(pygame.QUIT)
     if len(quit_events) > 0:
-        return False
-    else:
-        return True
+        running = False
 
 
 if __name__ == '__main__':
