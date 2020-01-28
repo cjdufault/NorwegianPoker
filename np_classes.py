@@ -10,6 +10,7 @@ class Display:
         # create screen, set video mode
         self.screen_width = width
         self.screen_height = height
+        self.screen_rect = pygame.Rect((0, 0, self.screen_width, self.screen_height))
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Norwegian Poker")
 
@@ -45,19 +46,18 @@ class Display:
         self.dice_origins = (((self.screen_width / 2) - 65, (self.screen_height / 2) - 30),
                              ((self.screen_width / 2) + 5, (self.screen_height / 2) - 30))
 
-        self.numbers_images = {2: pygame.image.load(os.path.join("assets", "numbers", "2.png")).convert(),
-                               3: pygame.image.load(os.path.join("assets", "numbers", "3.png")).convert(),
-                               4: pygame.image.load(os.path.join("assets", "numbers", "4.png")).convert(),
-                               5: pygame.image.load(os.path.join("assets", "numbers", "5.png")).convert(),
-                               6: pygame.image.load(os.path.join("assets", "numbers", "6.png")).convert(),
-                               7: pygame.image.load(os.path.join("assets", "numbers", "7.png")).convert(),
-                               8: pygame.image.load(os.path.join("assets", "numbers", "8.png")).convert(),
-                               9: pygame.image.load(os.path.join("assets", "numbers", "9.png")).convert(),
-                               10: pygame.image.load(os.path.join("assets", "numbers", "10.png")).convert(),
-                               11: pygame.image.load(os.path.join("assets", "numbers", "11.png")).convert(),
-                               12: pygame.image.load(os.path.join("assets", "numbers", "12.png")).convert()}
+        self.numbers_images = {2: pygame.image.load(os.path.join("assets", "numbers", "2.png")),
+                               3: pygame.image.load(os.path.join("assets", "numbers", "3.png")),
+                               4: pygame.image.load(os.path.join("assets", "numbers", "4.png")),
+                               5: pygame.image.load(os.path.join("assets", "numbers", "5.png")),
+                               6: pygame.image.load(os.path.join("assets", "numbers", "6.png")),
+                               7: pygame.image.load(os.path.join("assets", "numbers", "7.png")),
+                               8: pygame.image.load(os.path.join("assets", "numbers", "8.png")),
+                               9: pygame.image.load(os.path.join("assets", "numbers", "9.png")),
+                               10: pygame.image.load(os.path.join("assets", "numbers", "10.png")),
+                               11: pygame.image.load(os.path.join("assets", "numbers", "11.png")),
+                               12: pygame.image.load(os.path.join("assets", "numbers", "12.png"))}
 
-        # TODO: figure out why numbers are appearing with a black background, instead of transparent
         # where the sum of the two dice will be displayed
         self.numbers_origin = (self.dice_origins[1][0] + 80, self.dice_origins[1][1] - 10)
         self.numbers_rect = pygame.Rect(self.numbers_origin[0], self.numbers_origin[1],
@@ -73,9 +73,9 @@ class Display:
                                (self.screen_width - 15, (self.screen_height / 2) - 235))]
 
     def intro(self):
-        # draw background and title
+        # draw title and background
         self.screen.blit(self.background, (0, 0))
-        self.screen.blit(self.title_image, (192, 75))
+        self.screen.blit(self.title_image, ((self.screen_width / 2) - 320, (self.screen_height / 2) - 213))
         pygame.display.update()
 
         # after mouse click or key press, remove the title image and redraw background

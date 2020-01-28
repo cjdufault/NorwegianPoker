@@ -19,8 +19,6 @@ def main():
         display.deal()
         display.set_status_bar(0, True)
 
-    # TODO: display the result of a dice roll as a number on the screen
-
     # start the main game
     while running:
         do_turn()
@@ -40,13 +38,17 @@ def do_turn():
 
     # for computer players
     if not human:
-        # do dice roll
-        dice_roll = roll()
-        result = dice_roll[0] + dice_roll[1]
-        dice_rolled = True
+        running = listen_for_quit()
+
+        if running:
+            # do dice roll
+            dice_roll = roll()
+            result = dice_roll[0] + dice_roll[1]
+            dice_rolled = True
 
         running = listen_for_quit()
-        pygame.time.wait(1000)
+        if running:
+            pygame.time.wait(1000)
 
     # for human players
     else:
@@ -63,12 +65,15 @@ def do_turn():
                 display.set_roll_button(False)
 
                 # do dice roll
-                dice_roll = roll()
-                result = dice_roll[0] + dice_roll[1]
-                dice_rolled = True
+                running = listen_for_quit()
+                if running:
+                    dice_roll = roll()
+                    result = dice_roll[0] + dice_roll[1]
+                    dice_rolled = True
 
                 running = listen_for_quit()
-                pygame.time.wait(1000)
+                if running:
+                    pygame.time.wait(1000)
 
         elif event.type == pygame.QUIT:
             running = False
@@ -93,7 +98,8 @@ def do_turn():
                 turn = increment_turn(turn, len(display.players))
 
                 running = listen_for_quit()
-                pygame.time.wait(300)
+                if running:
+                    pygame.time.wait(300)
 
                 if not other_player_has_card_face_up:
                     next_player_has_card = display.players[turn].get_card(result).is_face_up()
@@ -104,15 +110,17 @@ def do_turn():
                         other_player_has_card_face_up = True
 
                         running = listen_for_quit()
-                        pygame.time.wait(750)
+                        if running:
+                            pygame.time.wait(750)
                         break
 
             if not other_player_has_card_face_up:
                 display.flip_card(player, result)
 
                 running = listen_for_quit()
-                pygame.time.wait(1000)
-                turn = increment_turn(turn, len(display.players))
+                if running:
+                    pygame.time.wait(1000)
+                    turn = increment_turn(turn, len(display.players))
 
         running = listen_for_quit()
         if running:
@@ -123,12 +131,13 @@ def do_turn():
         turn = increment_turn(turn, len(display.players))
 
         running = listen_for_quit()
-        pygame.time.wait(1000)
+        if running:
+            pygame.time.wait(1000)
 
     # tests if the game has ended
     for p in display.players:
         if p.has_won():
-            print(str(p.get_suit) + " has won")  # TODO: replace with an actual end of game screen or something
+            print(p.get_suit + " has won")  # TODO: replace with an actual end of game screen or something
             running = False
 
 
