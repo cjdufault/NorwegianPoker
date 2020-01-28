@@ -72,7 +72,8 @@ class Display:
     def intro(self):
         # draw title and background
         self.screen.blit(self.background, (0, 0))
-        title_image_rect = self.screen.blit(self.title_image, ((self.screen_width / 2) - 320, (self.screen_height / 2) - 213))
+        title_image_rect = self.screen.blit(self.title_image,
+                                            ((self.screen_width / 2) - 320, (self.screen_height / 2) - 213))
         pygame.display.update()
 
         # after mouse click or key press, remove the title image and redraw background
@@ -224,8 +225,9 @@ class Player:
         path = os.path.join("assets", suit)
 
         # keys indicate dice rolls that correspond to that card
-        self.hand = {2: Card("2", path), 3: Card("3", path), 4: Card("4", path), 5: Card("5", path), 6: Card("6", path),
-                     8: Card("8", path), 9: Card("9", path), 10: Card("10", path), 11: Card("J", path), 12: Card("Q", path)}
+        self.hand = \
+            {2: Card("2", path), 3: Card("3", path), 4: Card("4", path), 5: Card("5", path), 6: Card("6", path),
+             8: Card("8", path), 9: Card("9", path), 10: Card("10", path), 11: Card("J", path), 12: Card("Q", path)}
 
     def flip_card(self, dice_roll):
         self.hand[dice_roll].flip()
