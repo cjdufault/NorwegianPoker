@@ -12,6 +12,7 @@ def main():
     global display
 
     running = display.intro()
+    running = display.num_players()
 
     # TODO: ask the player how many players they want to play with (2-4) and implement gameplay w/ varying #s of players
 
@@ -39,7 +40,6 @@ def do_turn():
     # for computer players
     if not human:
         listen_for_quit()
-
         if running:
             # do dice roll
             dice_roll = roll()
@@ -48,8 +48,7 @@ def do_turn():
 
         listen_for_quit()
         if running:
-            pygame.time.wait(1000)
-
+            pygame.time.wait(750)
     # for human players
     else:
         display.set_roll_button(True)
@@ -70,10 +69,6 @@ def do_turn():
                     dice_roll = roll()
                     result = dice_roll[0] + dice_roll[1]
                     dice_rolled = True
-
-                listen_for_quit()
-                if running:
-                    pygame.time.wait(1000)
 
         elif event.type == pygame.QUIT:
             running = False
