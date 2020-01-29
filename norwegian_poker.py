@@ -48,7 +48,7 @@ def do_turn():
 
         listen_for_quit()
         if running:
-            pygame.time.wait(750)
+            pygame.time.wait(500)
     # for human players
     else:
         display.set_roll_button(True)
@@ -106,7 +106,7 @@ def do_turn():
 
                         listen_for_quit()
                         if running:
-                            pygame.time.wait(750)
+                            pygame.time.wait(500)
                         break
 
             if not other_player_has_card_face_up:
@@ -114,12 +114,12 @@ def do_turn():
 
                 listen_for_quit()
                 if running:
-                    pygame.time.wait(1000)
+                    pygame.time.wait(500)
                     turn = increment_turn(turn, len(display.players))
 
         listen_for_quit()
         if running:
-            pygame.time.wait(1000)
+            pygame.time.wait(500)
 
     # there are no sevens in this game, so we just go to the next turn
     elif dice_rolled and result == 7:

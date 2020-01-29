@@ -21,7 +21,9 @@ class Display:
         # so it doesn't have to do it every time the image is drawn
         self.background = pygame.image.load(os.path.join("assets", "poker_table.jpg")).convert()
         self.title_image = pygame.image.load(os.path.join("assets", "np_title.png")).convert()
-        self.num_players_image = pygame.image.load(os.path.join("assets", "players_options.png"))
+        self.two_players_image = pygame.image.load(os.path.join("assets", "player_options", "two_players.png"))
+        self.three_players_image = pygame.image.load(os.path.join("assets", "player_options", "three_players.png"))
+        self.four_players_image = pygame.image.load(os.path.join("assets", "player_options", "four_players.png"))
         self.card_back = pygame.image.load(os.path.join("assets", "card_back.png")).convert()
         self.roll_button = pygame.image.load(os.path.join("assets", "roll_button.png"))
         self.disabled_button = pygame.image.load(os.path.join("assets", "disabled_button.png"))
@@ -84,18 +86,18 @@ class Display:
         return True
 
     def num_players(self):
-        origin = (self.screen_width / 2) - 320, (self.screen_height / 2) - 213
-        num_players_rect = self.screen.blit(self.num_players_image, origin)
-        pygame.display.update(num_players_rect)
+        # buttons used to select number of players
+        two_player_rect = self.screen.blit(self.two_players_image,
+                                           ((self.screen_width / 2) - 224, (self.screen_height / 2) - 213))
+        three_player_rect = self.screen.blit(self.three_players_image,
+                                             ((self.screen_width / 2) - 224, (self.screen_height / 2) - 35))
+        four_player_rect = self.screen.blit(self.four_players_image,
+                                            ((self.screen_width / 2) - 224, (self.screen_height / 2) + 143))
+        pygame.display.update(two_player_rect)
+        pygame.display.update(three_player_rect)
+        pygame.display.update(four_player_rect)
 
-        # rectangles that will be checked for player clicks
-        two_player_rect = pygame.Rect(origin[0], origin[1], origin[0] + 448, origin[1] + 80)
-        three_player_rect = pygame.Rect(origin[0], origin[1] + 178, origin[0] + 448, origin[1] + 258)
-        four_player_rect = pygame.Rect(origin[0], origin[1] + 356, origin[0] + 448, origin[1] + 426)
-
-        selection_made = False
-
-        while not selection_made:
+        while True:
             event = pygame.event.wait()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -110,7 +112,9 @@ class Display:
                                ((self.screen_width / 2) - 170, 0))]
 
                     self.screen.blit(self.background, (0, 0))
-                    pygame.display.update(num_players_rect)
+                    pygame.display.update(two_player_rect)
+                    pygame.display.update(three_player_rect)
+                    pygame.display.update(four_player_rect)
                     return True
 
                 elif three_player_rect.collidepoint(mouse_pos):
@@ -123,7 +127,9 @@ class Display:
                                (self.screen_width - 15, (self.screen_height / 2) - 235))]
 
                     self.screen.blit(self.background, (0, 0))
-                    pygame.display.update(num_players_rect)
+                    pygame.display.update(two_player_rect)
+                    pygame.display.update(three_player_rect)
+                    pygame.display.update(four_player_rect)
                     return True
 
                 elif four_player_rect.collidepoint(mouse_pos):
@@ -138,7 +144,9 @@ class Display:
                                (self.screen_width - 15, (self.screen_height / 2) - 235))]
 
                     self.screen.blit(self.background, (0, 0))
-                    pygame.display.update(num_players_rect)
+                    pygame.display.update(two_player_rect)
+                    pygame.display.update(three_player_rect)
+                    pygame.display.update(four_player_rect)
                     return True
 
             elif event.type == pygame.QUIT:
