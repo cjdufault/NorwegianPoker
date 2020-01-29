@@ -41,6 +41,10 @@ def do_turn():
     if not human:
         listen_for_quit()
         if running:
+            pygame.time.wait(500)
+
+        listen_for_quit()
+        if running:
             # do dice roll
             dice_roll = roll()
             result = dice_roll[0] + dice_roll[1]
@@ -117,17 +121,13 @@ def do_turn():
                     pygame.time.wait(500)
                     turn = increment_turn(turn, len(display.players))
 
-        listen_for_quit()
-        if running:
-            pygame.time.wait(500)
-
     # there are no sevens in this game, so we just go to the next turn
     elif dice_rolled and result == 7:
         turn = increment_turn(turn, len(display.players))
 
         listen_for_quit()
         if running:
-            pygame.time.wait(1000)
+            pygame.time.wait(500)
 
     # tests if the game has ended
     for p in display.players:
