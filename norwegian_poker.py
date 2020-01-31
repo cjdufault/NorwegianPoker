@@ -11,7 +11,6 @@ display = np_classes.Display(1024, 576)
 def main():
     global running
     global restart
-    global display
 
     while restart:
         restart = False
@@ -32,7 +31,6 @@ def main():
 def do_turn():
     global turn
     global running
-    global display
     player = display.get_players()[turn]
 
     dice_rolled = False  # will be assigned true if a dice roll has occurred
@@ -140,8 +138,6 @@ def do_turn():
 
 
 def roll():
-    global display
-
     die_1_result = random.randint(1, 6)
     die_2_result = random.randint(1, 6)
 
