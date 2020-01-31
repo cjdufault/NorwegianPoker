@@ -27,6 +27,12 @@ class Display:
         self.card_back = pygame.image.load(os.path.join("assets", "card_back.png")).convert()
         self.roll_button = pygame.image.load(os.path.join("assets", "roll_button.png"))
         self.disabled_button = pygame.image.load(os.path.join("assets", "disabled_button.png"))
+        self.clubs_wins = pygame.image.load(os.path.join("assets", "game_over", "clubs.png"))
+        self.diamonds_wins = pygame.image.load(os.path.join("assets", "game_over", "diamonds.png"))
+        self.hearts_wins = pygame.image.load(os.path.join("assets", "game_over", "hearts.png"))
+        self.spades_wins = pygame.image.load(os.path.join("assets", "game_over", "spades.png"))
+        self.yes_image = pygame.image.load(os.path.join("assets", "yes.png"))
+        self.no_image = pygame.image.load(os.path.join("assets", "no.png"))
 
         self.status_bar_active_h = pygame.image.load(os.path.join("assets", "status_bars", "active_h.png")).convert()
         self.status_bar_active_v = pygame.image.load(os.path.join("assets", "status_bars", "active_v.png")).convert()
@@ -72,6 +78,9 @@ class Display:
                                             ((self.screen_width / 2) - 320, (self.screen_height / 2) - 213))
         pygame.display.update()
 
+        # clear event queue of mouse downs
+        pygame.event.clear(pygame.MOUSEBUTTONDOWN)
+
         # after mouse click or key press, remove the title image and redraw background
         while True:
             # pygame.event.wait() waits until event is registered, otherwise the program uses literally every cpu cycle
@@ -85,6 +94,39 @@ class Display:
                 break
         return True
 
+    def game_over(self, winner):
+        if winner == "clubs":
+            end_image = self.clubs_wins
+        elif winner == "diamonds":
+            end_image = self.diamonds_wins
+        elif winner == "hearts":
+            end_image = self.hearts_wins
+        else:
+            end_image = self.spades_wins
+
+        end_image_origin = ((self.screen_width / 2) - 320, (self.screen_height / 2) - 213)
+        end_image_rect = self.screen.blit(end_image, end_image_origin)
+
+        # buttons to select whether to restart the game
+        yes_rect = self.screen.blit(self.yes_image, (end_image_origin[0] + 200, end_image_origin[1] + 350))
+        no_rect = self.screen.blit(self.no_image, (end_image_origin[0] + 380, end_image_origin[1] + 350))
+
+        pygame.display.update(end_image_rect)
+        pygame.event.clear(pygame.MOUSEBUTTONDOWN)
+
+        while True:
+            event = pygame.event.wait()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+
+                if yes_rect.collidepoint(mouse_pos):
+                    return True
+                elif no_rect.collidepoint(mouse_pos):
+                    return False
+            elif event.type == pygame.QUIT:
+                return False
+
     def num_players(self):
         # buttons used to select number of players
         two_player_rect = self.screen.blit(self.two_players_image,
@@ -96,6 +138,8 @@ class Display:
         pygame.display.update(two_player_rect)
         pygame.display.update(three_player_rect)
         pygame.display.update(four_player_rect)
+
+        pygame.event.clear(pygame.MOUSEBUTTONDOWN)
 
         while True:
             event = pygame.event.wait()

@@ -4,28 +4,38 @@ import random
 
 turn = 0    # counter to indicate whose turn it is.
 running = True
+restart = True
 display = np_classes.Display(1024, 576)
 
 
 def main():
     global running
+    global restart
     global display
 
-    running = display.intro()
-    running = display.num_players()
+    while restart:
+        running = display.intro()
 
-    if running:  # checks to make sure player hasn't tried to quit while title screen is displayed
-        display.deal()
-        display.set_status_bar(0, True)
+        if running:
+            running = display.num_players()
+        else:
+            restart = False
 
-    # start the main game
-    while running:
-        do_turn()
+        if running:  # checks to make sure player hasn't tried to quit while title screen is displayed
+            display.deal()
+            display.set_status_bar(0, True)
+        else:
+            restart = False
+
+        # start the main game
+        while running:
+            do_turn()
 
 
 def do_turn():
     global turn
     global running
+    global restart
     global display
     player = display.get_players()[turn]
 
@@ -74,6 +84,7 @@ def do_turn():
 
         elif event.type == pygame.QUIT:
             running = False
+            restart = False
 
     # flip any cards that should be flipped
     if dice_rolled and result != 7:
@@ -130,8 +141,7 @@ def do_turn():
     # tests if the game has ended
     for p in display.players:
         if p.has_won():
-            print(p.get_suit() + " has won")  # TODO: replace with an actual end of game screen or something
-            running = False
+            game_over(p.get_suit())
 
 
 def roll():
@@ -157,13 +167,29 @@ def increment_turn(current_turn, num_players):
     return next_turn
 
 
+def game_over(winner):
+    global running
+    global restart
+    global display
+    global turn
+
+    running = False
+
+    restart = display.game_over(winner)
+    if restart:
+        display = np_classes.Display(1024, 576)
+        turn = 0
+
+
 # checks if any quit events are in the event queue
 def listen_for_quit():
     global running
+    global restart
 
     quit_events = pygame.event.get(pygame.QUIT)
     if len(quit_events) > 0:
         running = False
+        restart = False
 
 
 if __name__ == '__main__':
