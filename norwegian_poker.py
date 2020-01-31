@@ -14,18 +14,15 @@ def main():
     global display
 
     while restart:
+        restart = False
         running = display.intro()
 
-        if running:
-            running = display.num_players()
-        else:
-            restart = False
-
         if running:  # checks to make sure player hasn't tried to quit while title screen is displayed
+            running = display.num_players()
+
+        if running:
             display.deal()
             display.set_status_bar(0, True)
-        else:
-            restart = False
 
         # start the main game
         while running:
@@ -35,7 +32,6 @@ def main():
 def do_turn():
     global turn
     global running
-    global restart
     global display
     player = display.get_players()[turn]
 
@@ -84,7 +80,6 @@ def do_turn():
 
         elif event.type == pygame.QUIT:
             running = False
-            restart = False
 
     # flip any cards that should be flipped
     if dice_rolled and result != 7:
@@ -184,12 +179,10 @@ def game_over(winner):
 # checks if any quit events are in the event queue
 def listen_for_quit():
     global running
-    global restart
 
     quit_events = pygame.event.get(pygame.QUIT)
     if len(quit_events) > 0:
         running = False
-        restart = False
 
 
 if __name__ == '__main__':
