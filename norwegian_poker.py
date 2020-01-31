@@ -14,8 +14,6 @@ def main():
     running = display.intro()
     running = display.num_players()
 
-    # TODO: ask the player how many players they want to play with (2-4) and implement gameplay w/ varying #s of players
-
     if running:  # checks to make sure player hasn't tried to quit while title screen is displayed
         display.deal()
         display.set_status_bar(0, True)
