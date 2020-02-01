@@ -18,8 +18,10 @@ class Display:
         pygame.display.set_icon(icon)  # set icon
 
         # .convert() converts an image's pixel format to SDL's format ahead of time,
-        # so it doesn't have to do it every time the image is drawn
-        self.background = pygame.image.load(os.path.join("assets", "poker_table.jpg")).convert()
+        # so it doesn't have to do it every time the image is drawn; doesn't play well w/ transparency though
+        background_image = pygame.image.load(os.path.join("assets", "poker_table.jpg")).convert()
+        self.background = pygame.transform.scale(background_image, (self.screen_width, self.screen_height))
+
         self.title_image = pygame.image.load(os.path.join("assets", "np_title.png")).convert()
         self.two_players_image = pygame.image.load(os.path.join("assets", "player_options", "two_players.png"))
         self.three_players_image = pygame.image.load(os.path.join("assets", "player_options", "three_players.png"))

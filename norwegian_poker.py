@@ -5,7 +5,10 @@ import random
 turn = 0    # counter to indicate whose turn it is.
 running = True
 restart = True
-display = np_classes.Display(1024, 576)
+
+screen_width = 1024
+screen_height = 576
+display = np_classes.Display(screen_width, screen_height)
 
 
 def main():
@@ -168,7 +171,7 @@ def game_over(winner):
 
     restart = display.game_over(winner)
     if restart:
-        display = np_classes.Display(1024, 576)
+        display = np_classes.Display(screen_width, screen_height)
         turn = 0
 
 
