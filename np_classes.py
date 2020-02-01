@@ -110,8 +110,8 @@ class Display:
         end_image_rect = self.screen.blit(end_image, end_image_origin)
 
         # buttons to select whether to restart the game
-        yes_rect = self.screen.blit(self.yes_image, (end_image_origin[0] + 200, end_image_origin[1] + 350))
-        no_rect = self.screen.blit(self.no_image, (end_image_origin[0] + 380, end_image_origin[1] + 350))
+        yes_rect = self.screen.blit(self.yes_image, (end_image_origin[0] + 170, end_image_origin[1] + 350))
+        no_rect = self.screen.blit(self.no_image, (end_image_origin[0] + 370, end_image_origin[1] + 350))
 
         pygame.display.update(end_image_rect)
         pygame.event.clear(pygame.MOUSEBUTTONDOWN)
