@@ -137,6 +137,12 @@ def do_turn():
     # tests if the game has ended
     for p in display.players:
         if p.has_won():
+
+            # pause for long enough for the player to see the game is over
+            listen_for_quit()
+            if running:
+                pygame.time.wait(1000)
+
             game_over(p.get_suit())
 
 
@@ -169,8 +175,10 @@ def game_over(winner):
 
     running = False
 
-    restart = display.game_over(winner)
+    restart = display.game_over(winner)  # show end screen and ask for restart
     if restart:
+
+        # reset display and turn counter
         display = np_classes.Display(screen_width, screen_height)
         turn = 0
 
