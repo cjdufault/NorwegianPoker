@@ -58,6 +58,7 @@ def do_turn():
         listen_for_quit()
         if running:
             pygame.time.wait(500)
+
     # for human players
     else:
         display.set_roll_button(True)
@@ -142,8 +143,7 @@ def do_turn():
             listen_for_quit()
             if running:
                 pygame.time.wait(1000)
-
-            game_over(p.get_suit())
+                game_over(p.get_suit())
 
 
 def roll():
