@@ -8,9 +8,9 @@ class Display:
         pygame.init()
 
         # create screen, set video mode
-        self.screen_width = width
-        self.screen_height = height
-        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+        self.window_width = width
+        self.window_height = height
+        self.window = pygame.display.set_mode((self.window_width, self.window_height))
         pygame.display.set_caption("Norwegian Poker")
 
         # load assets
@@ -20,7 +20,7 @@ class Display:
         # .convert() converts an image's pixel format to SDL's format ahead of time,
         # so it doesn't have to do it every time the image is drawn; doesn't play well w/ transparency though
         background_image = pygame.image.load(os.path.join("assets", "poker_table.jpg")).convert()
-        self.background = pygame.transform.scale(background_image, (self.screen_width, self.screen_height))
+        self.background = pygame.transform.scale(background_image, (self.window_width, self.window_height))
 
         self.title_image = pygame.image.load(os.path.join("assets", "np_title.png")).convert()
         self.two_players_image = pygame.image.load(os.path.join("assets", "player_options", "two_players.png"))
@@ -43,7 +43,7 @@ class Display:
         self.status_bar_inactive_v = \
             pygame.image.load(os.path.join("assets", "status_bars", "inactive_v.png")).convert()
 
-        self.roll_button_origin = (self.screen_width - 300, self.screen_height - 150)
+        self.roll_button_origin = (self.window_width - 300, self.window_height - 150)
         self.roll_button_rect = pygame.Rect(self.roll_button_origin[0], self.roll_button_origin[1],
                                             self.roll_button_origin[0] + 100, self.roll_button_origin[1] + 100)
 
@@ -53,8 +53,8 @@ class Display:
                             pygame.image.load(os.path.join("assets", "dice", "dice4.png")).convert(),
                             pygame.image.load(os.path.join("assets", "dice", "dice5.png")).convert(),
                             pygame.image.load(os.path.join("assets", "dice", "dice6.png")).convert()]
-        self.dice_origins = (((self.screen_width / 2) - 65, (self.screen_height / 2) - 30),
-                             ((self.screen_width / 2) + 5, (self.screen_height / 2) - 30))
+        self.dice_origins = (((self.window_width / 2) - 65, (self.window_height / 2) - 30),
+                             ((self.window_width / 2) + 5, (self.window_height / 2) - 30))
 
         self.numbers_images = {2: pygame.image.load(os.path.join("assets", "numbers", "2.png")),
                                3: pygame.image.load(os.path.join("assets", "numbers", "3.png")),
@@ -75,9 +75,9 @@ class Display:
 
     def intro(self):
         # draw title and background
-        self.screen.blit(self.background, (0, 0))
-        title_image_rect = self.screen.blit(self.title_image,
-                                            ((self.screen_width / 2) - 320, (self.screen_height / 2) - 213))
+        self.window.blit(self.background, (0, 0))
+        title_image_rect = self.window.blit(self.title_image,
+                                            ((self.window_width / 2) - 320, (self.window_height / 2) - 213))
         pygame.display.update()
 
         # clear event queue of mouse downs
@@ -91,7 +91,7 @@ class Display:
             if event.type == pygame.QUIT:
                 return False
             elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-                self.screen.blit(self.background, (0, 0))
+                self.window.blit(self.background, (0, 0))
                 pygame.display.update(title_image_rect)
                 break
         return True
@@ -106,12 +106,12 @@ class Display:
         else:
             end_image = self.spades_wins
 
-        end_image_origin = ((self.screen_width / 2) - 320, (self.screen_height / 2) - 213)
-        end_image_rect = self.screen.blit(end_image, end_image_origin)
+        end_image_origin = ((self.window_width / 2) - 320, (self.window_height / 2) - 213)
+        end_image_rect = self.window.blit(end_image, end_image_origin)
 
         # buttons to select whether to restart the game
-        yes_rect = self.screen.blit(self.yes_image, (end_image_origin[0] + 170, end_image_origin[1] + 350))
-        no_rect = self.screen.blit(self.no_image, (end_image_origin[0] + 370, end_image_origin[1] + 350))
+        yes_rect = self.window.blit(self.yes_image, (end_image_origin[0] + 170, end_image_origin[1] + 350))
+        no_rect = self.window.blit(self.no_image, (end_image_origin[0] + 370, end_image_origin[1] + 350))
 
         pygame.display.update(end_image_rect)
         pygame.event.clear(pygame.MOUSEBUTTONDOWN)
@@ -131,12 +131,12 @@ class Display:
 
     def num_players(self):
         # buttons used to select number of players
-        two_player_rect = self.screen.blit(self.two_players_image,
-                                           ((self.screen_width / 2) - 224, (self.screen_height / 2) - 213))
-        three_player_rect = self.screen.blit(self.three_players_image,
-                                             ((self.screen_width / 2) - 224, (self.screen_height / 2) - 35))
-        four_player_rect = self.screen.blit(self.four_players_image,
-                                            ((self.screen_width / 2) - 224, (self.screen_height / 2) + 143))
+        two_player_rect = self.window.blit(self.two_players_image,
+                                           ((self.window_width / 2) - 224, (self.window_height / 2) - 213))
+        three_player_rect = self.window.blit(self.three_players_image,
+                                             ((self.window_width / 2) - 224, (self.window_height / 2) - 35))
+        four_player_rect = self.window.blit(self.four_players_image,
+                                            ((self.window_width / 2) - 224, (self.window_height / 2) + 143))
         pygame.display.update(two_player_rect)
         pygame.display.update(three_player_rect)
         pygame.display.update(four_player_rect)
@@ -152,12 +152,12 @@ class Display:
                 # define the players list based on the player's selection
                 if two_player_rect.collidepoint(mouse_pos):
                     self.players = [
-                        Player("clubs", ((self.screen_width / 2) - 170, self.screen_height - 202), False, True,
-                               ((self.screen_width / 2) - 170, self.screen_height - 15)),
-                        Player("hearts", ((self.screen_width / 2) - 170, 20), False, False,
-                               ((self.screen_width / 2) - 170, 0))]
+                        Player("clubs", ((self.window_width / 2) - 170, self.window_height - 202), False, True,
+                               ((self.window_width / 2) - 170, self.window_height - 15)),
+                        Player("hearts", ((self.window_width / 2) - 170, 20), False, False,
+                               ((self.window_width / 2) - 170, 0))]
 
-                    self.screen.blit(self.background, (0, 0))
+                    self.window.blit(self.background, (0, 0))
                     pygame.display.update(two_player_rect)
                     pygame.display.update(three_player_rect)
                     pygame.display.update(four_player_rect)
@@ -165,14 +165,14 @@ class Display:
 
                 elif three_player_rect.collidepoint(mouse_pos):
                     self.players = [
-                        Player("clubs", ((self.screen_width / 2) - 170, self.screen_height - 202), False, True,
-                               ((self.screen_width / 2) - 170, self.screen_height - 15)),
-                        Player("diamonds", (20, (self.screen_height / 2) - 235), True, False,
-                               (0, (self.screen_height / 2) - 235)),
-                        Player("spades", (self.screen_width - 150, (self.screen_height / 2) - 235), True, False,
-                               (self.screen_width - 15, (self.screen_height / 2) - 235))]
+                        Player("clubs", ((self.window_width / 2) - 170, self.window_height - 202), False, True,
+                               ((self.window_width / 2) - 170, self.window_height - 15)),
+                        Player("diamonds", (20, (self.window_height / 2) - 235), True, False,
+                               (0, (self.window_height / 2) - 235)),
+                        Player("spades", (self.window_width - 150, (self.window_height / 2) - 235), True, False,
+                               (self.window_width - 15, (self.window_height / 2) - 235))]
 
-                    self.screen.blit(self.background, (0, 0))
+                    self.window.blit(self.background, (0, 0))
                     pygame.display.update(two_player_rect)
                     pygame.display.update(three_player_rect)
                     pygame.display.update(four_player_rect)
@@ -180,16 +180,16 @@ class Display:
 
                 elif four_player_rect.collidepoint(mouse_pos):
                     self.players = [
-                        Player("clubs", ((self.screen_width / 2) - 170, self.screen_height - 202), False, True,
-                               ((self.screen_width / 2) - 170, self.screen_height - 15)),
-                        Player("diamonds", (20, (self.screen_height / 2) - 235), True, False,
-                               (0, (self.screen_height / 2) - 235)),
-                        Player("hearts", ((self.screen_width / 2) - 170, 20), False, False,
-                               ((self.screen_width / 2) - 170, 0)),
-                        Player("spades", (self.screen_width - 150, (self.screen_height / 2) - 235), True, False,
-                               (self.screen_width - 15, (self.screen_height / 2) - 235))]
+                        Player("clubs", ((self.window_width / 2) - 170, self.window_height - 202), False, True,
+                               ((self.window_width / 2) - 170, self.window_height - 15)),
+                        Player("diamonds", (20, (self.window_height / 2) - 235), True, False,
+                               (0, (self.window_height / 2) - 235)),
+                        Player("hearts", ((self.window_width / 2) - 170, 20), False, False,
+                               ((self.window_width / 2) - 170, 0)),
+                        Player("spades", (self.window_width - 150, (self.window_height / 2) - 235), True, False,
+                               (self.window_width - 15, (self.window_height / 2) - 235))]
 
-                    self.screen.blit(self.background, (0, 0))
+                    self.window.blit(self.background, (0, 0))
                     pygame.display.update(two_player_rect)
                     pygame.display.update(three_player_rect)
                     pygame.display.update(four_player_rect)
@@ -213,21 +213,21 @@ class Display:
             else:
                 status_bar_image = self.status_bar_inactive_h
 
-            status_bar_rect = self.screen.blit(status_bar_image, (status_bar_orig_x, status_bar_orig_y))
+            status_bar_rect = self.window.blit(status_bar_image, (status_bar_orig_x, status_bar_orig_y))
             pygame.display.update(status_bar_rect)
 
             # draw all of the cards
             if player.get_is_vert():
                 for i in range(5):
-                    card_rect_1 = self.screen.blit(player.get_card(i + 2).get_image(), (orig_x, orig_y + (i * 96)))
-                    card_rect_2 = self.screen.blit(player.get_card(i + 8).get_image(), (orig_x + 70, orig_y + (i * 96)))
+                    card_rect_1 = self.window.blit(player.get_card(i + 2).get_image(), (orig_x, orig_y + (i * 96)))
+                    card_rect_2 = self.window.blit(player.get_card(i + 8).get_image(), (orig_x + 70, orig_y + (i * 96)))
                     pygame.display.update(card_rect_1)
                     pygame.display.update(card_rect_2)
                     pygame.time.wait(100)
             else:
                 for i in range(5):
-                    card_rect_1 = self.screen.blit(player.get_card(i + 2).get_image(), (orig_x + (i * 70), orig_y))
-                    card_rect_2 = self.screen.blit(player.get_card(i + 8).get_image(), (orig_x + (i * 70), orig_y + 96))
+                    card_rect_1 = self.window.blit(player.get_card(i + 2).get_image(), (orig_x + (i * 70), orig_y))
+                    card_rect_2 = self.window.blit(player.get_card(i + 8).get_image(), (orig_x + (i * 70), orig_y + 96))
                     pygame.display.update(card_rect_1)
                     pygame.display.update(card_rect_2)
                     pygame.time.wait(100)
@@ -238,7 +238,7 @@ class Display:
         self.draw_die(self.dice_images[random.randint(0, 5)], self.dice_origins[1])
 
     def draw_die(self, image, origin):
-        die_rect = self.screen.blit(image, origin)
+        die_rect = self.window.blit(image, origin)
         pygame.display.update(die_rect)
 
     def roll(self, die_1_result, die_2_result):
@@ -256,7 +256,7 @@ class Display:
 
         dice_sum = die_1_result + die_2_result
 
-        numbers_rect = self.screen.blit(self.numbers_images[dice_sum], self.numbers_origin)
+        numbers_rect = self.window.blit(self.numbers_images[dice_sum], self.numbers_origin)
         pygame.display.update(numbers_rect)
 
     def flip_card(self, player, dice_roll):
@@ -288,14 +288,14 @@ class Display:
                 card_orig_y = player_origin[1] + 96
 
         # draw the new image
-        card_rect = self.screen.blit(image, (card_orig_x, card_orig_y))
+        card_rect = self.window.blit(image, (card_orig_x, card_orig_y))
         pygame.display.update(card_rect)
 
     def set_roll_button(self, set_enable):
         if set_enable:
-            roll_button_rect = self.screen.blit(self.roll_button, self.roll_button_origin)
+            roll_button_rect = self.window.blit(self.roll_button, self.roll_button_origin)
         else:
-            roll_button_rect = self.screen.blit(self.disabled_button, self.roll_button_origin)
+            roll_button_rect = self.window.blit(self.disabled_button, self.roll_button_origin)
         pygame.display.update(roll_button_rect)
 
     def set_status_bar(self, turn_num, is_active):
@@ -313,7 +313,7 @@ class Display:
             else:
                 image = self.status_bar_inactive_h
 
-        status_rect = self.screen.blit(image, status_origin)
+        status_rect = self.window.blit(image, status_origin)
         pygame.display.update(status_rect)
 
     def get_players(self):

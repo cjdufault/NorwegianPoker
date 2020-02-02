@@ -6,9 +6,9 @@ turn = 0    # counter to indicate whose turn it is.
 running = True
 restart = True
 
-screen_width = 1024
-screen_height = 576
-display = np_classes.Display(screen_width, screen_height)
+window_width = 1024
+window_height = 576
+display = np_classes.Display(window_width, window_height)
 
 
 def main():
@@ -179,7 +179,7 @@ def game_over(winner):
     if restart:
 
         # reset display and turn counter
-        display = np_classes.Display(screen_width, screen_height)
+        display = np_classes.Display(window_width, window_height)
         turn = 0
 
 
