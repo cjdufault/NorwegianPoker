@@ -137,6 +137,8 @@ class Display:
                                              ((self.window_width / 2) - 224, (self.window_height / 2) - 35))
         four_player_rect = self.window.blit(self.four_players_image,
                                             ((self.window_width / 2) - 224, (self.window_height / 2) + 143))
+        all_computer_rect = pygame.Rect(0, 0, 20, 20)  # hidden in top-left corner
+
         pygame.display.update(two_player_rect)
         pygame.display.update(three_player_rect)
         pygame.display.update(four_player_rect)
@@ -181,6 +183,23 @@ class Display:
                 elif four_player_rect.collidepoint(mouse_pos):
                     self.players = [
                         Player("clubs", ((self.window_width / 2) - 170, self.window_height - 202), False, True,
+                               ((self.window_width / 2) - 170, self.window_height - 15)),
+                        Player("diamonds", (20, (self.window_height / 2) - 235), True, False,
+                               (0, (self.window_height / 2) - 235)),
+                        Player("hearts", ((self.window_width / 2) - 170, 20), False, False,
+                               ((self.window_width / 2) - 170, 0)),
+                        Player("spades", (self.window_width - 150, (self.window_height / 2) - 235), True, False,
+                               (self.window_width - 15, (self.window_height / 2) - 235))]
+
+                    self.window.blit(self.background, (0, 0))
+                    pygame.display.update(two_player_rect)
+                    pygame.display.update(three_player_rect)
+                    pygame.display.update(four_player_rect)
+                    return True
+
+                elif all_computer_rect.collidepoint(mouse_pos):  # for an all-computer game
+                    self.players = [
+                        Player("clubs", ((self.window_width / 2) - 170, self.window_height - 202), False, False,
                                ((self.window_width / 2) - 170, self.window_height - 15)),
                         Player("diamonds", (20, (self.window_height / 2) - 235), True, False,
                                (0, (self.window_height / 2) - 235)),
