@@ -1,6 +1,9 @@
 import pygame
 import np_classes
 import random
+import os
+
+os.environ['SDL_VIDEO_CENTERED'] = '1'  # centers window in screen
 
 turn = 0    # counter to indicate whose turn it is.
 running = True
