@@ -5,6 +5,7 @@ import random
 
 class Display:
     def __init__(self, width, height):
+        os.environ['SDL_VIDEO_CENTERED'] = '1'  # centers window in screen
         pygame.init()
 
         # create screen, set video mode
