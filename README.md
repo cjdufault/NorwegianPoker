@@ -1,6 +1,8 @@
 # NorwegianPoker
 *Created by Connor Dufault in January-February 2020*
 
+![Title Card](https://imgur.com/kbB8Q0W.png)
+
 ## Overview
 Norwegian Poker is a card-and-dice game played with two or more players and two dice. Each player is dealt a full suit of cards, with the exception of the Ace, Seven, and King, which are not used in this game. The players lay all of their cards in front of them, face-up. The object of the game is to be the first player to have all of their cards turned face-down.
 
@@ -10,22 +12,18 @@ If a player rolls doubles *and* has the corresponding card face-up, they get to 
 
 ## Screenshots
 
-Title Card:
-
-![](https://imgur.com/kbB8Q0W.png)
-
 Two-player game:
 
-![](https://imgur.com/DDxVqyL.png)
+![Two-player game](https://imgur.com/DDxVqyL.png)
 
 Three-player game:
 
-![](https://imgur.com/rrqgNDN.png)
+![Three-player game](https://imgur.com/rrqgNDN.png)
 
 Four-player game:
 
-![](https://imgur.com/1pnExPQ.png)
+![Four-player game](https://imgur.com/1pnExPQ.png)
 
 Game Over:
 
-![](https://imgur.com/2AaJLK5.png)
+![Game Over](https://imgur.com/2AaJLK5.png)
