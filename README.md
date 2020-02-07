@@ -11,16 +11,16 @@ If a player rolls doubles *and* has the corresponding card face-up, they get to 
 ## Screenshots
 
 Title card:
-https://imgur.com/kbB8Q0W
+https://imgur.com/kbB8Q0W.png
 
 Two-player game:
-https://imgur.com/DDxVqyL
+https://imgur.com/DDxVqyL.png
 
 Three-player game:
-https://imgur.com/rrqgNDN
+https://imgur.com/rrqgNDN.png
 
 Four-player game:
-https://imgur.com/1pnExPQ
+https://imgur.com/1pnExPQ.png
 
 Game Over:
-https://imgur.com/2AaJLK5
+https://imgur.com/2AaJLK5.png
