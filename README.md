@@ -8,7 +8,7 @@ Norwegian Poker is a card-and-dice game played with two or more players and two 
 
 Play proceeds clockwise. Each player rolls the dice and, if the card that corresponds to the sum of the faces of the dice is face-up, turns that card over. If the corresponding card is already face-down, the next player who has that card face-up gets to turn that card over, and it is now their turn (any players in between are skipped). If no player has that card face-up, the player who rolled the dice must turn their own card face-up. Since Sevens are excluded from this game, a roll of seven does nothing, and play proceeds to the next player.
 
-If a player rolls doubles *and* has the corresponding card face-up, they get to take a second turn.
+If a player rolls doubles *and* has the corresponding card face-up, they get to take another turn.
 
 ## Screenshots
 
