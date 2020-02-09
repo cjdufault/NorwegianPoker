@@ -168,7 +168,7 @@ def game_over(winner):
         turn = 0
 
 
-# checks if any quit events are in the event queue
+# checks if any QUIT events are in the event queue
 def listen_for_quit():
     global running
 
@@ -177,6 +177,7 @@ def listen_for_quit():
         running = False
 
 
+# waits for the given number of milliseconds so long as there has been no QUIT event
 def wait(time):
     listen_for_quit()
     if running:
