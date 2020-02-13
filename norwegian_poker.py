@@ -129,6 +129,7 @@ def do_turn():
 
             # pause for long enough for the player to see the game is over
             wait(1000)
+            game_over(p)
 
 
 def roll():
