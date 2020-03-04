@@ -76,6 +76,8 @@ def do_turn():
                     result = dice_roll[0] + dice_roll[1]
                     dice_rolled = True
 
+                    wait(500)
+
         elif event.type == pygame.QUIT:
             running = False
 
