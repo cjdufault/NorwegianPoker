@@ -1,6 +1,7 @@
 import pygame
-import np_classes
 import random
+
+from classes import display
 
 turn = 0    # counter to indicate whose turn it is.
 running = True
@@ -8,7 +9,7 @@ restart = True
 
 window_width = 1024
 window_height = 576
-display = np_classes.Display(window_width, window_height)
+display = display.Display(window_width, window_height)
 
 
 def main():
@@ -167,7 +168,7 @@ def game_over(winner):
     if restart:
 
         # reset display and turn counter
-        display = np_classes.Display(window_width, window_height)
+        display = display.Display(window_width, window_height)
         turn = 0
 
 

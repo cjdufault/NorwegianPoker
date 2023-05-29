@@ -2,6 +2,7 @@ import os
 import pygame
 import random
 
+from . import player
 
 class Display:
     def __init__(self, width, height):
@@ -154,9 +155,9 @@ class Display:
                 # define the players list based on the player's selection
                 if two_player_rect.collidepoint(mouse_pos):
                     self.players = [
-                        Player("clubs", ((self.window_width / 2) - 170, self.window_height - 202), False, True,
+                        player.Player("clubs", ((self.window_width / 2) - 170, self.window_height - 202), False, True,
                                ((self.window_width / 2) - 170, self.window_height - 15)),
-                        Player("hearts", ((self.window_width / 2) - 170, 20), False, False,
+                        player.Player("hearts", ((self.window_width / 2) - 170, 20), False, False,
                                ((self.window_width / 2) - 170, 0))]
 
                     self.window.blit(self.background, (0, 0))
@@ -167,11 +168,11 @@ class Display:
 
                 elif three_player_rect.collidepoint(mouse_pos):
                     self.players = [
-                        Player("clubs", ((self.window_width / 2) - 170, self.window_height - 202), False, True,
+                        player.Player("clubs", ((self.window_width / 2) - 170, self.window_height - 202), False, True,
                                ((self.window_width / 2) - 170, self.window_height - 15)),
-                        Player("diamonds", (20, (self.window_height / 2) - 235), True, False,
+                        player.Player("diamonds", (20, (self.window_height / 2) - 235), True, False,
                                (0, (self.window_height / 2) - 235)),
-                        Player("spades", (self.window_width - 150, (self.window_height / 2) - 235), True, False,
+                        player.Player("spades", (self.window_width - 150, (self.window_height / 2) - 235), True, False,
                                (self.window_width - 15, (self.window_height / 2) - 235))]
 
                     self.window.blit(self.background, (0, 0))
@@ -182,13 +183,13 @@ class Display:
 
                 elif four_player_rect.collidepoint(mouse_pos):
                     self.players = [
-                        Player("clubs", ((self.window_width / 2) - 170, self.window_height - 202), False, True,
+                        player.Player("clubs", ((self.window_width / 2) - 170, self.window_height - 202), False, True,
                                ((self.window_width / 2) - 170, self.window_height - 15)),
-                        Player("diamonds", (20, (self.window_height / 2) - 235), True, False,
+                        player.Player("diamonds", (20, (self.window_height / 2) - 235), True, False,
                                (0, (self.window_height / 2) - 235)),
-                        Player("hearts", ((self.window_width / 2) - 170, 20), False, False,
+                        player.Player("hearts", ((self.window_width / 2) - 170, 20), False, False,
                                ((self.window_width / 2) - 170, 0)),
-                        Player("spades", (self.window_width - 150, (self.window_height / 2) - 235), True, False,
+                        player.Player("spades", (self.window_width - 150, (self.window_height / 2) - 235), True, False,
                                (self.window_width - 15, (self.window_height / 2) - 235))]
 
                     self.window.blit(self.background, (0, 0))
@@ -323,75 +324,3 @@ class Display:
 
     def set_players(self, players):
         self.players = players
-
-
-class Player:
-    def __init__(self, suit, origin, is_vert, is_human, status_bar_origin):
-        self.suit = suit  # the suit that the player is playing with
-        self.origin = origin    # indicates the location where the player's hand is to be drawn
-        self.is_vert = is_vert  # indicates the orientation that the player's hand is to be drawn in
-        self.is_human = is_human
-        self.status_bar_origin = status_bar_origin
-
-        path = os.path.join("assets", suit)
-
-        # keys indicate dice rolls that correspond to that card
-        self.hand = \
-            {2: Card("2", path), 3: Card("3", path), 4: Card("4", path), 5: Card("5", path), 6: Card("6", path),
-             8: Card("8", path), 9: Card("9", path), 10: Card("10", path), 11: Card("J", path), 12: Card("Q", path)}
-
-    def flip_card(self, dice_roll):
-        self.hand[dice_roll].flip()
-
-    def get_card(self, dice_roll):
-        return self.hand[dice_roll]
-
-    def get_is_vert(self):
-        return self.is_vert
-
-    def get_is_human(self):
-        return self.is_human
-
-    def get_origin(self):
-        return self.origin
-
-    def get_hand(self):
-        return self.hand
-
-    def get_suit(self):
-        return self.suit
-
-    def get_status_bar_origin(self):
-        return self.status_bar_origin
-
-    # returns true if all player's cards are face down
-    def has_won(self):
-        has_won = True
-
-        for card in self.hand:
-
-            # set has_won to false and break if we find any card that's face up
-            if self.hand[card].is_face_up():
-                has_won = False
-                break
-
-        return has_won
-
-
-class Card:
-    def __init__(self, card_name, image_path):
-        self.card_name = card_name
-        self.image = pygame.image.load(os.path.join(image_path, card_name + ".png")).convert()
-        self.face_up = True
-
-    def flip(self):
-        if self.face_up:
-            self.face_up = False
-        else:
-            self.face_up = True
-
-    def is_face_up(self):
-        return self.face_up
-
-    def get_image(self):
-        return self.image
